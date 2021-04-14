@@ -1,9 +1,13 @@
 import React from "react";
 
+import { Text } from "@chakra-ui/layout";
+
+import Content from "../components/Content";
+
 export default function Home() {
   return (
-    <>
-      <p>Welcome to Home</p>
-    </>
+    <Content>
+      <Text>Home</Text>
+    </Content>
   );
 }

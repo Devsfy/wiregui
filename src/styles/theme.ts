@@ -18,6 +18,15 @@ const customTheme: Theme = {
     sm: "4px",
     md: "8px",
   },
+  colors: {
+    ...theme.colors,
+    gray: {
+      ...theme.colors.gray,
+      "100": "#3B3B3B",
+      "200": "#2A2A2A",
+      "300": "#1B1B1B",
+    },
+  },
 };
 
 export default customTheme;
