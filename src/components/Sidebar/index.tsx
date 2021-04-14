@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Flex } from "@chakra-ui/layout";
+import { Box, Flex, Text } from "@chakra-ui/layout";
 
 import NewConnection from "./NewConnection";
 import ConnectionItem, { ConnectionProps } from "./ConnectionItem";
@@ -29,9 +29,14 @@ export default function Sidebar() {
 
   return (
     <Flex bg="gray.200" direction="column" w="200px">
-      <Flex justify="center" p="4" w="100%">
-        <NewConnection />
-      </Flex>
+      <Box px="4" pt="4" w="100%">
+        <Flex justify="center">
+          <NewConnection />
+        </Flex>
+        <Text color="whiteAlpha.700" fontWeight="bold" mt="8">
+          CONNECTIONS
+        </Text>
+      </Box>
       <Flex direction="column">
         {connections.map((connection) => (
           <ConnectionItem
