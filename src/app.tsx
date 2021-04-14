@@ -1,8 +1,15 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from "react";
 
-function render() {
-  ReactDOM.render(<h2>Hello from React!</h2>, document.body);
+import AppProvider from "./context";
+
+import Home from "./pages/Home";
+
+function App() {
+  return (
+    <AppProvider>
+      <Home />
+    </AppProvider>
+  );
 }
 
-render();
+export default App;
