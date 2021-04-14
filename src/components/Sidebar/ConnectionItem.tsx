@@ -6,12 +6,14 @@ export interface ConnectionProps {
   name: string;
   ip: string;
   lastConnect: string;
+  active: boolean;
 }
 
 export default function ConnectionItem({
   name,
   ip,
   lastConnect,
+  active,
 }: ConnectionProps) {
   return (
     <Flex
@@ -22,7 +24,12 @@ export default function ConnectionItem({
       transition=".3s ease"
       _hover={{ background: "whiteAlpha.100" }}
     >
-      <Box bg="green.400" w="10px" h="10px" borderRadius="50%" />
+      <Box
+        bg={active ? "green.400" : "whiteAlpha.600"}
+        w="10px"
+        h="10px"
+        borderRadius="50%"
+      />
       <Flex direction="column" ml="2" w="89%">
         <Text
           color="whiteAlpha.700"

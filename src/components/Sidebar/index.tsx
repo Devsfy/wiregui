@@ -11,16 +11,19 @@ export default function Sidebar() {
       name: "Nightly",
       ip: "10.75.74.14/42",
       lastConnect: "a day ago",
+      active: true,
     },
     {
       name: "volcanic_branch",
       ip: "10.71.74.14/42",
       lastConnect: "3 days ago",
+      active: false,
     },
     {
       name: "super_mega_power_volcanic_branch",
       ip: "10.72.74.14/42",
       lastConnect: "15 days ago",
+      active: false,
     },
   ]);
 
@@ -36,6 +39,7 @@ export default function Sidebar() {
             name={connection.name}
             ip={connection.ip}
             lastConnect={connection.lastConnect}
+            active={connection.active}
           />
         ))}
       </Flex>
