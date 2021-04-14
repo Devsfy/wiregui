@@ -12,7 +12,7 @@ export default function Content({ children }: ContentProps) {
   return (
     <Flex bg="gray.300" minH="100vh" w="100vw">
       <Sidebar />
-      <Flex p="2" w="calc(100vw - 200px)">
+      <Flex p="4" w="calc(100vw - 200px)">
         {children}
       </Flex>
     </Flex>
