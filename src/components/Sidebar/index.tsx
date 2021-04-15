@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import * as fs from "fs";
+import * as path from "path";
+import { ipcRenderer } from "electron";
+import { WgConfig } from "wireguard-tools";
+
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
 import NewConnection from "./NewConnection";
@@ -8,6 +13,33 @@ import ConnectionItem, { ConnectionProps } from "./ConnectionItem";
 
 export default function Sidebar() {
   const history = useHistory();
+
+  // Read configuration files from appData
+  // TODO: we should move this to a store so it can be shared
+  // and maybe readdir async
+  async function loadConfiguratios() {
+    const appDataPath = path.join(ipcRenderer.sendSync("getPath", "appData"), "configurations");
+    if (!fs.existsSync(appDataPath)) {
+      fs.mkdirSync(appDataPath);
+    }
+
+    const filenames = fs.readdirSync(appDataPath);
+    const connectionProps = await Promise.all(filenames.map(async (filename: string) => {
+      const config = new WgConfig({ filePath: path.join(appDataPath, filename) });
+      await config.parseFile();
+      return {
+        name: filename.split(".")[0],
+        ip: config.wgInterface.address,
+        lastConnect: "never",
+        active: false,
+      };
+    }));
+
+    console.log(connectionProps);
+  }
+
+  loadConfiguratios();
+
   const [connections] = useState<ConnectionProps[]>([
     {
       name: "Nightly",
