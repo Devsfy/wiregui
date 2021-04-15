@@ -15,7 +15,6 @@ export default function Home() {
       try {
         await checkWgIsInstalled();
       } catch (err) {
-        console.log(err);
         alert("Wireguard is not installed on the system.");
       }
     }
