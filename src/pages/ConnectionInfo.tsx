@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -6,7 +6,7 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { deleteFile } from "../store/modules/wgConfig/action";
-import { StoreState, WgConfigState } from "../types/store";
+import { StoreState, WgConfigFile, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
@@ -17,10 +17,15 @@ interface ConnectionParam {
 export default function ConnectionInfo() {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [file, setFile] = useState<WgConfigFile>();
   const { name } = useParams<ConnectionParam>();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
+
+  useEffect(() => {
+    setFile(files.find((f) => f.name === name));
+  }, [name]);
 
   function handleEdit() {
     // EDIT
@@ -31,8 +36,6 @@ export default function ConnectionInfo() {
   }
 
   async function handleDelete() {
-    const file = files.find((f) => f.name === name);
-
     if (!file) {
       toast(`Could not find config for ${name}`, { type: "error" });
       return;
@@ -69,7 +72,7 @@ export default function ConnectionInfo() {
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text fontWeight="medium">Interface:&nbsp;</Text>
-          <Text>{name}</Text>
+          {file && <Text>{file.name}</Text>}
         </Flex>
         <Flex align="center" mt="2" w="100%">
           <Text fontWeight="medium">Address:&nbsp;</Text>

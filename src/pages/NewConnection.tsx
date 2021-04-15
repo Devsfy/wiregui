@@ -53,7 +53,7 @@ export default function NewConnection() {
 
     try {
       dispatch(addFile(file.name, file.data));
-      history.push(`/connection/${file.name}`);
+      history.push(`/connection/${file.name.split(".")[0]}`);
     } catch (e) {
       toast(e.message, { type: "error" });
     }
