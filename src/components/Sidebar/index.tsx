@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
-import { loadWgConfigFiles } from "../../utils";
 import { fetchFiles } from "../../store/modules/wgConfig/action";
 
 import { StoreState, WgConfigState } from "../../types/store";
@@ -20,16 +19,7 @@ export default function Sidebar() {
   );
 
   useEffect(() => {
-    async function fetchWgConfigFiles() {
-      try {
-        const response = await loadWgConfigFiles();
-        dispatch(fetchFiles(response));
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    fetchWgConfigFiles();
+    dispatch(fetchFiles());
   }, []);
 
   function handleRedirect(param: string) {
