@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
-import { toast } from "react-toastify";
 
 import { fetchFiles } from "../../store/modules/wgConfig/action";
 
