@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
+import { toast } from "react-toastify";
 
 import { loadWgConfigFiles } from "../../utils";
 import { fetchFiles } from "../../store/modules/wgConfig/action";
@@ -25,7 +26,7 @@ export default function Sidebar() {
         const response = await loadWgConfigFiles();
         dispatch(fetchFiles(response));
       } catch (e) {
-        alert(e.message);
+        toast(e.message, { type: "error" });
       }
     }
 

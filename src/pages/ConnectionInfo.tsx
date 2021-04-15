@@ -3,6 +3,7 @@ import { useHistory, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
 import { Button, Flex, Text } from "@chakra-ui/react";
+import { toast } from "react-toastify";
 
 import { deleteFile } from "../store/modules/wgConfig/action";
 import { StoreState, WgConfigState } from "../types/store";
@@ -33,7 +34,7 @@ export default function ConnectionInfo() {
     const file = files.find((f) => f.name === name);
 
     if (!file) {
-      alert(`Could not find config for ${name}`);
+      toast(`Could not find config for ${name}`, { type: "error" });
       return;
     }
 
@@ -41,7 +42,7 @@ export default function ConnectionInfo() {
       dispatch(deleteFile(file));
       history.push("/");
     } catch (e) {
-      alert(e.message);
+      toast(e.message, { type: "error" });
     }
   }
 
