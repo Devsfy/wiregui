@@ -2,21 +2,40 @@ import React from "react";
 import { useHistory } from "react-router";
 
 import * as fs from "fs";
+import * as path from "path";
+import { app } from "electron";
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 
 import Content from "../components/Content";
 
+interface ConfFile {
+  name: string;
+  path: string;
+  data: string;
+}
+
 export default function NewConnection() {
   const history = useHistory();
 
+  let file: ConfFile | undefined;
+
   function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
-    if (event.currentTarget.files) {
-      fs.readFile(event.currentTarget.files[0].path, "utf-8", (err, data) => {
+    if (event.currentTarget.files && event.currentTarget.files.length > 0) {
+      const currentFile = event.currentTarget.files[0];
+
+      fs.readFile(currentFile.path, "utf-8", (err, data) => {
         if (err) {
           alert(err.message);
           return;
         }
-        console.log("NewConnection.tsx", data);
+
+        file = {
+          name: currentFile.name,
+          path: currentFile.path,
+          data: data,
+        };
+
+        console.log("NewConnection.tsx", file);
       });
     }
   }
@@ -26,7 +45,20 @@ export default function NewConnection() {
   }
 
   function handleSave() {
-    history.push("/");
+    if (!file) {
+      alert("No file selected!");
+      return;
+    }
+
+    const appDataPath = path.join(app.getPath("appData"), "configurations");
+    fs.writeFile(appDataPath, file.data, (err) => {
+      if (err) {
+        alert(err.message);
+        return;
+      }
+
+      history.push(`/connection/${file?.name}`);
+    });
   }
 
   return (
@@ -80,6 +112,7 @@ export default function NewConnection() {
             colorScheme="orange"
             size="sm"
             ml="4"
+            disabled={!!file === false}
             onClick={handleSave}
           >
             Save
