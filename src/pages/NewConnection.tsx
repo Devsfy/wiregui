@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 
 import * as fs from "fs";
@@ -16,8 +16,7 @@ interface ConfFile {
 
 export default function NewConnection() {
   const history = useHistory();
-
-  let file: ConfFile | undefined;
+  const [file, setFile] = useState<ConfFile | undefined>();
 
   function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.currentTarget.files && event.currentTarget.files.length > 0) {
@@ -29,13 +28,7 @@ export default function NewConnection() {
           return;
         }
 
-        file = {
-          name: currentFile.name,
-          path: currentFile.path,
-          data: data,
-        };
-
-        console.log("NewConnection.tsx", file);
+        setFile({ name: currentFile.name, path: currentFile.path, data: data });
       });
     }
   }
@@ -50,7 +43,11 @@ export default function NewConnection() {
       return;
     }
 
-    const appDataPath = path.join(ipcRenderer.sendSync("getPath", "appData"), "configurations", file.name);
+    const appDataPath = path.join(
+      ipcRenderer.sendSync("getPath", "appData"),
+      "configurations",
+      file.name
+    );
     fs.writeFile(appDataPath, file.data, (err) => {
       if (err) {
         alert(err.message);
@@ -106,6 +103,7 @@ export default function NewConnection() {
             mt="2"
             w="100%"
             h="100%"
+            value={file?.data}
           />
         </Flex>
         <Flex justify="flex-end" mt="4">
