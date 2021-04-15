@@ -2,12 +2,12 @@ import React from "react";
 
 import AppProvider from "./context";
 
-import Home from "./pages/Home";
+import Routes from "./routes/index";
 
 function App() {
   return (
     <AppProvider>
-      <Home />
+      <Routes />
     </AppProvider>
   );
 }
