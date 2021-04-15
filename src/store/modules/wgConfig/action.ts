@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ipcRenderer } from "electron";
+import { WgConfig } from "wireguard-tools";
 
 import { WgConfigTypes, WgConfigFile } from "../../../types/store";
 
@@ -13,11 +14,30 @@ export function fetchFiles(files: WgConfigFile[]) {
   };
 }
 
-export function addFile(file: WgConfigFile) {
+export function addFile(name: string, data: string) {
+  const filePath = path.join(
+    ipcRenderer.sendSync("getPath", "userData"),
+    "configurations",
+    name,
+  );
+  fs.writeFileSync(filePath, data);
+
+  const config = new WgConfig({});
+  config.parse(data);
+
+  const wgConfigFile: WgConfigFile = {
+    name: name,
+    address: config.wgInterface.address,
+    lastConnectAt: "never",
+    active: false,
+  };
+
+  console.log(wgConfigFile);
+
   return {
     type: WgConfigTypes.addFile,
     payload: {
-      file,
+      file: wgConfigFile,
     },
   };
 }

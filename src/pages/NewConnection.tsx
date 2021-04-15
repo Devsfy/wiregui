@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
-import { saveFile, readFile, ConfFile } from "../utils";
+import { readFile, ConfFile } from "../utils";
 import { addFile } from "../store/modules/wgConfig/action";
 
 import Content from "../components/Content";
@@ -39,8 +39,7 @@ export default function NewConnection() {
     }
 
     try {
-      const newFile = await saveFile(file.name, file.data);
-      dispatch(addFile(newFile));
+      dispatch(addFile(file.name, file.data));
       history.push(`/connection/${file.name}`);
     } catch (e) {
       toast(e.message, { type: "error" });
