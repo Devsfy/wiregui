@@ -37,7 +37,7 @@ export default function ConnectionInfo() {
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
             Connection Info
           </Text>
-          <Button color="whiteAlpha.800" colorScheme="red" size="xs">
+          <Button color="whiteAlpha.800" size="xs">
             Delete
           </Button>
         </Flex>
