@@ -56,7 +56,7 @@ export function addFile(name: string, data: string) {
   config.parse(data);
 
   const wgConfigFile: WgConfigFile = {
-    name: name,
+    name: name.split(".")[0],
     address: config.wgInterface.address,
     lastConnectAt: "never",
     active: false,
