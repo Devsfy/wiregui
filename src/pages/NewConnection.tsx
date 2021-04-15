@@ -5,23 +5,36 @@ import { useDispatch } from "react-redux";
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
-import { readFile, ConfFile } from "../utils";
 import { addFile } from "../store/modules/wgConfig/action";
 
 import Content from "../components/Content";
+
+interface ConfFile {
+  name: string;
+  path: string;
+  data: string;
+}
 
 export default function NewConnection() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [file, setFile] = useState<ConfFile | undefined>();
 
-  async function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.currentTarget.files && event.currentTarget.files.length > 0) {
       const currentFile = event.currentTarget.files[0];
 
       try {
-        const confFile = await readFile(currentFile.name, currentFile.path);
-        setFile(confFile);
+        const reader = new FileReader();
+        reader.readAsText(currentFile, "utf-8");
+        reader.onload = function (evt: ProgressEvent<FileReader>) {
+          if (!evt.target) return;
+          setFile({ name: currentFile.name, path: currentFile.path, data: evt.target.result as string });
+        }
+
+        reader.onerror = function () {
+          toast(`Could not read file ${currentFile.name}`, { type: "error" });
+        }
       } catch (e) {
         toast(e.message, { type: "error" });
       }
