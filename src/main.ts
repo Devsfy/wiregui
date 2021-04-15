@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron";
+import "./ipc";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
