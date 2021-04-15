@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
+import { toast } from "react-toastify";
 
 import { readFile, ConfFile } from "../utils";
 import { addFile } from "../store/modules/wgConfig/action";
@@ -22,7 +23,7 @@ export default function NewConnection() {
         const confFile = await readFile(currentFile.name, currentFile.path);
         setFile(confFile);
       } catch (e) {
-        alert(e.message);
+        toast(e.message, { type: "error" });
       }
     }
   }
@@ -33,7 +34,7 @@ export default function NewConnection() {
 
   async function handleSave() {
     if (!file) {
-      alert("No file selected!");
+      toast("No file selected!", { type: "error" });
       return;
     }
 
@@ -41,7 +42,7 @@ export default function NewConnection() {
       dispatch(addFile(file.name, file.data));
       history.push(`/connection/${file.name}`);
     } catch (e) {
-      alert(e.message);
+      toast(e.message, { type: "error" });
     }
   }
 
