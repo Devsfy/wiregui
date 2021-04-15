@@ -9,6 +9,18 @@ import Content from "../components/Content";
 export default function NewConnection() {
   const history = useHistory();
 
+  function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.currentTarget.files) {
+      fs.readFile(event.currentTarget.files[0].path, "utf-8", (err, data) => {
+        if (err) {
+          alert(err.message);
+          return;
+        }
+        console.log("NewConnection.tsx", data);
+      });
+    }
+  }
+
   function handleCancel() {
     history.push("/");
   }
@@ -35,18 +47,7 @@ export default function NewConnection() {
             New Connection
           </Text>
           <Button size="xs">Import</Button>
-          <input type="file" accept=".conf" onChange={(event)=> {
-            // TODO: move this to an appropriate location
-            if (event.currentTarget.files) {
-              fs.readFile(event.currentTarget.files[0].path, "utf-8", (err, data) => {
-                if (err) {
-                  alert(err.message);
-                  return;
-                }
-                console.log("NewConnection.tsx", data);
-              });
-            }
-          }}></input>
+          <input type="file" accept=".conf" onChange={handleImport}></input>
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text>Name:</Text>
