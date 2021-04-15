@@ -30,6 +30,10 @@ const customTheme: Theme = {
       ...theme.colors.orange,
       "200": "#FF6C0E",
     },
+    red: {
+      ...theme.colors.orange,
+      "200": "#CD382D",
+    },
   },
 };
 

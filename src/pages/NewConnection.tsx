@@ -30,11 +30,13 @@ export default function NewConnection() {
         mt="8"
       >
         <Flex justify="space-between" w="100%">
-          <Text fontSize="lg">New Connection</Text>
+          <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
+            New Connection
+          </Text>
           <Button size="xs">Import</Button>
         </Flex>
         <Flex align="center" mt="4" w="100%">
-          <Text fontSize="lg">Name:</Text>
+          <Text>Name:</Text>
           <Input
             bg="gray.300"
             borderColor="transparent"
@@ -44,7 +46,7 @@ export default function NewConnection() {
           />
         </Flex>
         <Flex direction="column" mt="4" w="100%" h="100%">
-          <Text fontSize="lg">Interface:</Text>
+          <Text>Interface:</Text>
           <Textarea
             bg="gray.300"
             borderColor="transparent"
