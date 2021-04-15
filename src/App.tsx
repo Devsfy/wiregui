@@ -14,7 +14,7 @@ function App() {
       try {
         await checkWgIsInstalled();
       } catch (err) {
-        alert("Wireguard is not installed on the system.");
+        // alert("Wireguard is not installed on the system.");
       }
     }
 

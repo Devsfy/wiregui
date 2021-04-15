@@ -26,6 +26,10 @@ const customTheme: Theme = {
       "200": "#2A2A2A",
       "300": "#1B1B1B",
     },
+    orange: {
+      ...theme.colors.orange,
+      "200": "#FF6C0E",
+    },
   },
 };
 
