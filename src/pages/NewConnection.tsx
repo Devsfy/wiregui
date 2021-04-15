@@ -57,7 +57,12 @@ export default function NewConnection() {
         return;
       }
 
-      history.push(`/connection/${file?.name}`);
+      if (!file) {
+        alert("File no longer exists");
+        return;
+      }
+
+      history.push(`/connection/${file.name}`);
     });
   }
 
