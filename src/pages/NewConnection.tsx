@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
 
+import * as fs from "fs";
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 
 import Content from "../components/Content";
@@ -34,6 +35,18 @@ export default function NewConnection() {
             New Connection
           </Text>
           <Button size="xs">Import</Button>
+          <input type="file" accept=".conf" onChange={(event)=> {
+            // TODO: move this to an appropriate location
+            if (event.currentTarget.files) {
+              fs.readFile(event.currentTarget.files[0].path, "utf-8", (err, data) => {
+                if (err) {
+                  alert(err.message);
+                  return;
+                }
+                console.log("NewConnection.tsx", data);
+              });
+            }
+          }}></input>
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text>Name:</Text>
