@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 
 import * as fs from "fs";
 import * as path from "path";
-import { app } from "electron";
+import { ipcRenderer } from "electron";
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 
 import Content from "../components/Content";
@@ -50,7 +50,7 @@ export default function NewConnection() {
       return;
     }
 
-    const appDataPath = path.join(app.getPath("appData"), "configurations");
+    const appDataPath = path.join(ipcRenderer.sendSync("getPath", "appData"), "configurations", file.name);
     fs.writeFile(appDataPath, file.data, (err) => {
       if (err) {
         alert(err.message);
