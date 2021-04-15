@@ -2,8 +2,6 @@ import React from "react";
 import { useHistory, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
-import * as path from "path";
-import { ipcRenderer } from "electron";
 import { Button, Flex, Text } from "@chakra-ui/react";
 
 import { deleteFile } from "../store/modules/wgConfig/action";
@@ -32,7 +30,7 @@ export default function ConnectionInfo() {
   }
 
   async function handleDelete() {
-    const file = files.find(f => f.name === name);
+    const file = files.find((f) => f.name === name);
 
     if (!file) {
       alert(`Could not find config for ${name}`);
