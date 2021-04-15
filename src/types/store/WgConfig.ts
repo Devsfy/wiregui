@@ -8,6 +8,7 @@ export interface WgConfigFile {
 export enum WgConfigTypes {
   fetchFiles = "FETCH_FILES",
   addFile = "ADD_FILE",
+  deleteFile = "DELETE_FILE",
 }
 
 export interface WgConfigState {

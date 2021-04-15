@@ -1,7 +1,13 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
 
+import * as path from "path";
+import { ipcRenderer } from "electron";
 import { Button, Flex, Text } from "@chakra-ui/react";
+
+import { deleteFile } from "../store/modules/wgConfig/action";
+import { StoreState, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
@@ -10,7 +16,12 @@ interface ConnectionParam {
 }
 
 export default function ConnectionInfo() {
+  const history = useHistory();
+  const dispatch = useDispatch();
   const { name } = useParams<ConnectionParam>();
+  const { files } = useSelector<StoreState, WgConfigState>(
+    (state) => state.wgConfig
+  );
 
   function handleEdit() {
     // EDIT
@@ -18,6 +29,22 @@ export default function ConnectionInfo() {
 
   function handleActivate() {
     // ACTIVATE / DEACTIVATE
+  }
+
+  async function handleDelete() {
+    const file = files.find(f => f.name === name);
+
+    if (!file) {
+      alert(`Could not find config for ${name}`);
+      return;
+    }
+
+    try {
+      dispatch(deleteFile(file));
+      history.push("/");
+    } catch (e) {
+      alert(e.message);
+    }
   }
 
   return (
@@ -37,7 +64,7 @@ export default function ConnectionInfo() {
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
             Connection Info
           </Text>
-          <Button color="whiteAlpha.800" size="xs">
+          <Button color="whiteAlpha.800" size="xs" onClick={handleDelete}>
             Delete
           </Button>
         </Flex>
