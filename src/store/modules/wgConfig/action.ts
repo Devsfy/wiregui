@@ -62,8 +62,6 @@ export function addFile(name: string, data: string) {
     active: false,
   };
 
-  console.log(wgConfigFile);
-
   return {
     type: WgConfigTypes.addFile,
     payload: {
