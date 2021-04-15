@@ -2,19 +2,14 @@ import React from "react";
 
 import { Flex, Box, Text } from "@chakra-ui/react";
 
-export interface ConnectionProps {
-  name: string;
-  ip: string;
-  lastConnect: string;
-  active: boolean;
-}
+import { WgConfigFile } from "../../types/store";
 
 export default function ConnectionItem({
   name,
-  ip,
-  lastConnect,
+  address,
+  lastConnectAt,
   active,
-}: ConnectionProps) {
+}: WgConfigFile) {
   return (
     <Flex
       align="center"
@@ -41,8 +36,8 @@ export default function ConnectionItem({
           {name}
         </Text>
         <Flex color="whiteAlpha.600" justify="space-between">
-          <Text fontSize="xs">{ip}</Text>
-          <Text fontSize="xs">{lastConnect}</Text>
+          {address && <Text fontSize="xs">{address[0]}</Text>}
+          <Text fontSize="xs">{lastConnectAt}</Text>
         </Flex>
       </Flex>
     </Flex>

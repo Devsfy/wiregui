@@ -1,35 +1,29 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
 
-import * as fs from "fs";
-import * as path from "path";
-import { ipcRenderer } from "electron";
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
+
+import { saveFile, readFile, ConfFile } from "../utils";
+import { addFile } from "../store/modules/wgConfig/action";
 
 import Content from "../components/Content";
 
-interface ConfFile {
-  name: string;
-  path: string;
-  data: string;
-}
-
 export default function NewConnection() {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [file, setFile] = useState<ConfFile | undefined>();
 
-  function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.currentTarget.files && event.currentTarget.files.length > 0) {
       const currentFile = event.currentTarget.files[0];
 
-      fs.readFile(currentFile.path, "utf-8", (err, data) => {
-        if (err) {
-          alert(err.message);
-          return;
-        }
-
-        setFile({ name: currentFile.name, path: currentFile.path, data: data });
-      });
+      try {
+        const confFile = await readFile(currentFile.name, currentFile.path);
+        setFile(confFile);
+      } catch (e) {
+        alert(e.message);
+      }
     }
   }
 
@@ -37,30 +31,19 @@ export default function NewConnection() {
     history.push("/");
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!file) {
       alert("No file selected!");
       return;
     }
 
-    const appDataPath = path.join(
-      ipcRenderer.sendSync("getPath", "appData"),
-      "configurations",
-      file.name
-    );
-    fs.writeFile(appDataPath, file.data, (err) => {
-      if (err) {
-        alert(err.message);
-        return;
-      }
-
-      if (!file) {
-        alert("File no longer exists");
-        return;
-      }
-
+    try {
+      const newFile = await saveFile(file.name, file.data);
+      dispatch(addFile(newFile));
       history.push(`/connection/${file.name}`);
-    });
+    } catch (e) {
+      alert(e.message);
+    }
   }
 
   return (

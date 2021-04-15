@@ -1,65 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-
-import * as fs from "fs";
-import * as path from "path";
-import { ipcRenderer } from "electron";
-import { WgConfig } from "wireguard-tools";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
+import { loadWgConfigFiles } from "../../utils";
+import { fetchFiles } from "../../store/modules/wgConfig/action";
+
+import { StoreState, WgConfigState } from "../../types/store";
+
 import NewConnection from "./NewConnection";
-import ConnectionItem, { ConnectionProps } from "./ConnectionItem";
+import ConnectionItem from "./ConnectionItem";
 
 export default function Sidebar() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { files } = useSelector<StoreState, WgConfigState>(
+    (state) => state.wgConfig
+  );
 
-  // Read configuration files from appData
-  // TODO: we should move this to a store so it can be shared
-  // and maybe readdir async
-  async function loadConfiguratios() {
-    const appDataPath = path.join(ipcRenderer.sendSync("getPath", "appData"), "configurations");
-    if (!fs.existsSync(appDataPath)) {
-      fs.mkdirSync(appDataPath);
+  useEffect(() => {
+    async function fetchWgConfigFiles() {
+      try {
+        const response = await loadWgConfigFiles();
+        dispatch(fetchFiles(response));
+      } catch (e) {
+        alert(e.message);
+      }
     }
 
-    const filenames = fs.readdirSync(appDataPath);
-    const connectionProps = await Promise.all(filenames.map(async (filename: string) => {
-      const config = new WgConfig({ filePath: path.join(appDataPath, filename) });
-      await config.parseFile();
-      return {
-        name: filename.split(".")[0],
-        ip: config.wgInterface.address,
-        lastConnect: "never",
-        active: false,
-      };
-    }));
-
-    console.log(connectionProps);
-  }
-
-  loadConfiguratios();
-
-  const [connections] = useState<ConnectionProps[]>([
-    {
-      name: "Nightly",
-      ip: "10.75.74.14/42",
-      lastConnect: "a day ago",
-      active: true,
-    },
-    {
-      name: "volcanic_branch",
-      ip: "10.71.74.14/42",
-      lastConnect: "3 days ago",
-      active: false,
-    },
-    {
-      name: "super_mega_power_volcanic_branch",
-      ip: "10.72.74.14/42",
-      lastConnect: "15 days ago",
-      active: false,
-    },
-  ]);
+    fetchWgConfigFiles();
+  }, []);
 
   function handleRedirect(param: string) {
     history.push(`/connection/${param}`);
@@ -76,17 +47,17 @@ export default function Sidebar() {
         </Text>
       </Box>
       <Flex direction="column">
-        {connections.map((connection) => (
+        {files.map((file) => (
           <Link
-            key={connection.ip}
-            onClick={() => handleRedirect(connection.name)}
+            key={file.name}
+            onClick={() => handleRedirect(file.name)}
             _hover={{ textDecoration: "none" }}
           >
             <ConnectionItem
-              name={connection.name}
-              ip={connection.ip}
-              lastConnect={connection.lastConnect}
-              active={connection.active}
+              name={file.name}
+              address={file.address}
+              lastConnectAt={file.lastConnectAt}
+              active={file.active}
             />
           </Link>
         ))}

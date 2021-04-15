@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
+import { Provider } from "react-redux";
 import { checkWgIsInstalled } from "wireguard-tools";
 
 import AppProvider from "./context";
-
 import Routes from "./routes/index";
+import store from "./store";
 
 function App() {
   // Check if wireguard is installed, since there's nothing
@@ -22,9 +23,11 @@ function App() {
   }, []);
 
   return (
-    <AppProvider>
-      <Routes />
-    </AppProvider>
+    <Provider store={store}>
+      <AppProvider>
+        <Routes />
+      </AppProvider>
+    </Provider>
   );
 }
 
