@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { Box, Flex, Text } from "@chakra-ui/layout";
+import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
 import NewConnection from "./NewConnection";
 import ConnectionItem, { ConnectionProps } from "./ConnectionItem";
 
 export default function Sidebar() {
+  const history = useHistory();
   const [connections] = useState<ConnectionProps[]>([
     {
       name: "Nightly",
@@ -27,6 +29,10 @@ export default function Sidebar() {
     },
   ]);
 
+  function handleRedirect(param: string) {
+    history.push(`/connection/${param}`);
+  }
+
   return (
     <Flex bg="gray.200" direction="column" w="200px">
       <Box px="4" pt="4" w="100%">
@@ -39,13 +45,18 @@ export default function Sidebar() {
       </Box>
       <Flex direction="column">
         {connections.map((connection) => (
-          <ConnectionItem
+          <Link
             key={connection.ip}
-            name={connection.name}
-            ip={connection.ip}
-            lastConnect={connection.lastConnect}
-            active={connection.active}
-          />
+            onClick={() => handleRedirect(connection.name)}
+            _hover={{ textDecoration: "none" }}
+          >
+            <ConnectionItem
+              name={connection.name}
+              ip={connection.ip}
+              lastConnect={connection.lastConnect}
+              active={connection.active}
+            />
+          </Link>
         ))}
       </Flex>
     </Flex>

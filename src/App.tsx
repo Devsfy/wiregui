@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { checkWgIsInstalled } from 'wireguard-tools';
+import { checkWgIsInstalled } from "wireguard-tools";
 
 import AppProvider from "./context";
 
