@@ -6,19 +6,20 @@ import { WgConfig } from "wireguard-tools";
 import { WgConfigFile } from "../types/store";
 
 export async function loadWgConfigFiles(): Promise<WgConfigFile[]> {
-  const appDataPath = path.join(
-    ipcRenderer.sendSync("getPath", "appData"),
+  const userDataPath = path.join(
+    ipcRenderer.sendSync("getPath", "userData"),
     "configurations"
   );
-  if (!fs.existsSync(appDataPath)) {
-    fs.mkdirSync(appDataPath);
+
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath);
   }
 
-  const filenames = fs.readdirSync(appDataPath);
+  const filenames = fs.readdirSync(userDataPath);
   return Promise.all(
     filenames.map(async (filename: string) => {
       const config = new WgConfig({
-        filePath: path.join(appDataPath, filename),
+        filePath: path.join(userDataPath, filename),
       });
       await config.parseFile();
       return {

@@ -14,14 +14,14 @@ export async function saveFile(
   name: string,
   data: string
 ): Promise<WgConfigFile> {
-  const appDataPath = path.join(
-    ipcRenderer.sendSync("getPath", "appData"),
+  const filePath = path.join(
+    ipcRenderer.sendSync("getPath", "userData"),
     "configurations",
     name
   );
-  fs.writeFileSync(appDataPath, data);
+  fs.writeFileSync(filePath, data);
 
-  const config = new WgConfig({ filePath: appDataPath });
+  const config = new WgConfig({ filePath });
   await config.parseFile();
   return {
     name: name,
