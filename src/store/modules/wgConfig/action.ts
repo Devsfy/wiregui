@@ -52,15 +52,15 @@ export function fetchFilesSuccess(files: WgConfigFile[]) {
 }
 
 export function addFile(name: string, data: string) {
+  const config = new WgConfig({});
+  config.parse(data);
+
   const filePath = path.join(
     ipcRenderer.sendSync("getPath", "userData"),
     "configurations",
     name,
   );
   fs.writeFileSync(filePath, data);
-
-  const config = new WgConfig({});
-  config.parse(data);
 
   const lastConnectAt = localStorage.getItem(name);
   const wgConfigFile: WgConfigFile = {
