@@ -128,7 +128,6 @@ export default function NewConnection() {
             Cancel
           </Button>
           <Button
-            color="whiteAlpha.800"
             colorScheme="orange"
             size="sm"
             ml="4"

@@ -176,7 +176,6 @@ export default function ConnectionInfo() {
             launchButtonText="Delete"
           />
           <Button
-            color="whiteAlpha.800"
             colorScheme="orange"
             size="sm"
             ml="4"

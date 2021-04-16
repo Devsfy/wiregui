@@ -64,7 +64,7 @@ export default function DialogButton({
       >
         <AlertDialogOverlay />
 
-        <AlertDialogContent>
+        <AlertDialogContent bg="gray.300">
           <AlertDialogHeader>{header}</AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>{body}</AlertDialogBody>
@@ -72,7 +72,7 @@ export default function DialogButton({
             <Button ref={cancelRef} onClick={onHandleCancel}>
               {cancelButtonText}
             </Button>
-            <Button colorScheme="red" ml={3} onClick={onHandleConfirm}>
+            <Button colorScheme="orange" ml={3} onClick={onHandleConfirm}>
               {confirmButtonText}
             </Button>
           </AlertDialogFooter>
