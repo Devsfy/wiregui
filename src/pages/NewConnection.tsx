@@ -19,7 +19,8 @@ interface ConfFile {
 export default function NewConnection() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [file, setFile] = useState<ConfFile | undefined>();
+  const [file, setFile] = useState<ConfFile>();
+  const [hiddenInput, setHiddenInput] = useState<HTMLInputElement | null>();
   const { userDataPath } = useSelector<StoreState, AppState>(
     (state) => state.app
   );
@@ -33,12 +34,16 @@ export default function NewConnection() {
         reader.readAsText(currentFile, "utf-8");
         reader.onload = function (evt: ProgressEvent<FileReader>) {
           if (!evt.target) return;
-          setFile({ name: currentFile.name, path: currentFile.path, data: evt.target.result as string });
-        }
+          setFile({
+            name: currentFile.name,
+            path: currentFile.path,
+            data: evt.target.result as string,
+          });
+        };
 
         reader.onerror = function () {
           toast(`Could not read file ${currentFile.name}`, { type: "error" });
-        }
+        };
       } catch (e) {
         toast(e.message, { type: "error" });
       }
@@ -71,8 +76,8 @@ export default function NewConnection() {
         color="whiteAlpha.700"
         direction="column"
         p="4"
-        w="50%"
-        maxH="300px"
+        w="575px"
+        h="625px"
         mx="auto"
         mt="8"
       >
@@ -80,8 +85,14 @@ export default function NewConnection() {
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
             New Connection
           </Text>
-          <Button size="xs">Import</Button>
-          <input type="file" accept=".conf" onChange={handleImport}></input>
+          <Button size="xs" onClick={() => hiddenInput?.click()}>Import</Button>
+          <input
+            hidden
+            type="file"
+            accept=".conf"
+            onChange={handleImport}
+            ref={el => setHiddenInput(el)}
+          ></input>
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text>Name:</Text>
@@ -91,6 +102,8 @@ export default function NewConnection() {
             size="xs"
             w="50%"
             ml="2"
+            value={file?.name}
+            readOnly
           />
         </Flex>
         <Flex direction="column" mt="4" w="100%" h="100%">
@@ -104,6 +117,7 @@ export default function NewConnection() {
             w="100%"
             h="100%"
             value={file?.data}
+            readOnly
           />
         </Flex>
         <Flex justify="flex-end" mt="4">
