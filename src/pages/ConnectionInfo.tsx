@@ -4,9 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import * as fs from "fs";
 import * as path from "path";
-import { ipcRenderer } from "electron";
 import { WgConfig } from "wireguard-tools";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { getCurrentConnectionName } from "../utils";
@@ -110,8 +109,8 @@ export default function ConnectionInfo() {
         color="whiteAlpha.700"
         direction="column"
         p="4"
-        w="50%"
-        maxH="500px"
+        w="575px"
+        h="625px"
         mx="auto"
         mt="8"
       >
@@ -121,23 +120,23 @@ export default function ConnectionInfo() {
           </Text>
         </Flex>
         <Flex align="center" mt="4" w="100%">
-          <Text fontWeight="medium">Interface:&nbsp;</Text>
+          <Text fontWeight="medium">Name:&nbsp;</Text>
           {file && <Text>{name}</Text>}
         </Flex>
         <Flex align="center" mt="2" w="100%">
           <Text fontWeight="medium">Addresses:&nbsp;</Text>
-          {file && <Text>{file.wgInterface.address}</Text>}
+          {file && <Text>{file.wgInterface.address?.join(", ")}</Text>}
         </Flex>
         <Flex align="center" mt="2" w="100%">
           <Text fontWeight="medium">DNS:&nbsp;</Text>
-          {file && <Text>{file.wgInterface.dns}</Text>}
+          {file && <Text>{file.wgInterface.dns?.join(", ")}</Text>}
         </Flex>
         {file?.peers?.map((peer) => {
           return (
             <div key={peer.publicKey}>
               <Flex align="center" mt="2" w="100%">
                 <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
-                <Text>{peer.allowedIps}</Text>
+                <Text>{peer.allowedIps?.join(", ")}</Text>
               </Flex>
               <Flex align="center" mt="2" w="100%">
                 <Text fontWeight="medium">Endpoint:&nbsp;</Text>
@@ -150,6 +149,20 @@ export default function ConnectionInfo() {
             </div>
           );
         })}
+        <Flex direction="column" mt="4" w="100%" h="100%">
+          <Text>Interface:</Text>
+          <Textarea
+            bg="gray.300"
+            borderColor="transparent"
+            size="xs"
+            resize="none"
+            mt="2"
+            w="100%"
+            h="100%"
+            value={file?.toString()}
+            readOnly
+          />
+        </Flex>
         <Flex justify="flex-end" mt="auto">
           <DialogButton
             header="Are you sure?"
