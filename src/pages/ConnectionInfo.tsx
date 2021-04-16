@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
+import * as fs from "fs";
+import * as path from "path";
+import { ipcRenderer } from "electron";
+import { WgConfig } from "wireguard-tools";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { deleteFile } from "../store/modules/wgConfig/action";
-import { StoreState, WgConfigFile, WgConfigState } from "../types/store";
+import { StoreState, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
@@ -17,14 +21,24 @@ interface ConnectionParam {
 export default function ConnectionInfo() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [file, setFile] = useState<WgConfigFile>();
+  const [file, setFile] = useState<WgConfig>();
   const { name } = useParams<ConnectionParam>();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
 
   useEffect(() => {
-    setFile(files.find((f) => f.name === name));
+    const filePath = path.join(
+      ipcRenderer.sendSync("getPath", "userData"),
+      "configurations",
+      `${name}.conf`,
+    );
+
+    const data = fs.readFileSync(filePath, "utf-8");
+    const config = new WgConfig({});
+    config.parse(data);
+
+    setFile(config);
   }, [name]);
 
   function handleEdit() {
@@ -36,13 +50,15 @@ export default function ConnectionInfo() {
   }
 
   async function handleDelete() {
-    if (!file) {
+    const wgConfigFile = files.find(f => f.name === name);
+
+    if (!wgConfigFile) {
       toast(`Could not find config for ${name}`, { type: "error" });
       return;
     }
 
     try {
-      dispatch(deleteFile(file));
+      dispatch(deleteFile(wgConfigFile));
       history.push("/");
     } catch (e) {
       toast(e.message, { type: "error" });
@@ -72,12 +88,32 @@ export default function ConnectionInfo() {
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text fontWeight="medium">Interface:&nbsp;</Text>
-          {file && <Text>{file.name}</Text>}
+          {file && <Text>{name}</Text>}
         </Flex>
         <Flex align="center" mt="2" w="100%">
-          <Text fontWeight="medium">Address:&nbsp;</Text>
-          <Text>10.75.74.14/24</Text>
+          <Text fontWeight="medium">Addresses:&nbsp;</Text>
+          {file && <Text>{file.wgInterface.address}</Text>}
         </Flex>
+        <Flex align="center" mt="2" w="100%">
+          <Text fontWeight="medium">DNS:&nbsp;</Text>
+          {file && <Text>{file.wgInterface.dns}</Text>}
+        </Flex>
+        {file?.peers?.map((peer) => {
+          <Flex>
+            <Flex align="center" mt="2" w="100%">
+              <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
+              <Text>{peer.allowedIps}</Text>
+            </Flex>
+            <Flex align="center" mt="2" w="100%">
+              <Text fontWeight="medium">Endpoint:&nbsp;</Text>
+              <Text>{peer.endpoint}</Text>
+            </Flex>
+            <Flex align="center" mt="2" w="100%">
+              <Text fontWeight="medium">Public key:&nbsp;</Text>
+              <Text>{peer.publicKey}</Text>
+            </Flex>
+          </Flex>
+        })}
         <Flex justify="flex-end" mt="auto">
           <Button size="sm" onClick={handleEdit}>
             Edit
