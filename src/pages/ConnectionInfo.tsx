@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 import { getCurrentConnectionName } from "../utils";
 import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
-import { StoreState, WgConfigFile, WgConfigState } from "../types/store";
+import { AppState, StoreState, WgConfigFile, WgConfigState } from "../types/store";
 
 import DialogButton from "../components/DialogButton";
 import Content from "../components/Content";
@@ -29,10 +29,13 @@ export default function ConnectionInfo() {
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
+  const { userDataPath } = useSelector<StoreState, AppState>(
+    (state) => state.app
+  );
 
   useEffect(() => {
     const filePath = path.join(
-      ipcRenderer.sendSync("getPath", "userData"),
+      userDataPath,
       "configurations",
       `${name}.conf`,
     );
@@ -92,7 +95,7 @@ export default function ConnectionInfo() {
     }
 
     try {
-      dispatch(deleteFile(wgConfigFile));
+      dispatch(deleteFile(wgConfigFile, userDataPath));
       history.push("/");
     } catch (e) {
       toast(e.message, { type: "error" });

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { addFile } from "../store/modules/wgConfig/action";
+import { StoreState, AppState } from "../types/store";
 
 import Content from "../components/Content";
 
@@ -19,6 +20,9 @@ export default function NewConnection() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [file, setFile] = useState<ConfFile | undefined>();
+  const { userDataPath } = useSelector<StoreState, AppState>(
+    (state) => state.app
+  );
 
   function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.currentTarget.files && event.currentTarget.files.length > 0) {
@@ -52,7 +56,7 @@ export default function NewConnection() {
     }
 
     try {
-      dispatch(addFile(file.name, file.data));
+      dispatch(addFile(file.name, file.data, userDataPath));
       history.push(`/connection/${file.name.split(".")[0]}`);
     } catch (e) {
       toast(e.message, { type: "error" });

@@ -1,28 +1,27 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Dispatch } from "react";
-import { ipcRenderer } from "electron";
 import { WgConfig } from "wireguard-tools";
 
 import { WgConfigTypes, WgConfigFile } from "../../../types/store";
 import { getCurrentConnectionName } from "../../../utils";
 
-export function fetchFiles() {
+export function fetchFiles(userDataPath: string) {
   return async function(dispatch: Dispatch<unknown>) {
-    const userDataPath = path.join(
-      ipcRenderer.sendSync("getPath", "userData"),
+    const configPath = path.join(
+      userDataPath,
       "configurations"
     );
   
-    if (!fs.existsSync(userDataPath)) {
-      fs.mkdirSync(userDataPath);
+    if (!fs.existsSync(configPath)) {
+      fs.mkdirSync(configPath);
     }
   
     const curConName = await getCurrentConnectionName();
-    const filenames = fs.readdirSync(userDataPath);
+    const filenames = fs.readdirSync(configPath);
     const files = await Promise.all(
       filenames.map(async (filename: string) => {
-        const filePath = path.join(userDataPath, filename);
+        const filePath = path.join(configPath, filename);
         const config = new WgConfig({ filePath });
         await config.parseFile();
 
@@ -51,12 +50,12 @@ export function fetchFilesSuccess(files: WgConfigFile[]) {
   };
 }
 
-export function addFile(name: string, data: string) {
+export function addFile(name: string, data: string, userDataPath: string) {
   const config = new WgConfig({});
   config.parse(data);
 
   const filePath = path.join(
-    ipcRenderer.sendSync("getPath", "userData"),
+    userDataPath,
     "configurations",
     name,
   );
@@ -79,9 +78,9 @@ export function addFile(name: string, data: string) {
   };
 }
 
-export function deleteFile(file: WgConfigFile) {
+export function deleteFile(file: WgConfigFile, userDataPath: string) {
   const filePath = path.join(
-    ipcRenderer.sendSync("getPath", "userData"),
+    userDataPath,
     "configurations",
     `${file.name}.conf`,
   );

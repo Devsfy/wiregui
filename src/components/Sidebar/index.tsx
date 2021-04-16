@@ -6,7 +6,7 @@ import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
 import { fetchFiles } from "../../store/modules/wgConfig/action";
 
-import { StoreState, WgConfigState } from "../../types/store";
+import { AppState, StoreState, WgConfigState } from "../../types/store";
 
 import NewConnection from "./NewConnection";
 import ConnectionItem from "./ConnectionItem";
@@ -17,9 +17,12 @@ export default function Sidebar() {
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
+  const { userDataPath } = useSelector<StoreState, AppState>(
+    (state) => state.app
+  );
 
   useEffect(() => {
-    dispatch(fetchFiles());
+    dispatch(fetchFiles(userDataPath));
   }, []);
 
   function handleRedirect(param: string) {
