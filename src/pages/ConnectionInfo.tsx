@@ -13,6 +13,7 @@ import { getCurrentConnectionName } from "../utils";
 import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
 import { StoreState, WgConfigFile, WgConfigState } from "../types/store";
 
+import DialogButton from "../components/DialogButton";
 import Content from "../components/Content";
 
 interface ConnectionParam {
@@ -47,10 +48,6 @@ export default function ConnectionInfo() {
   useEffect(() => {
     setWgConfigFile(files.find(f => f.name === name));
   }, [files]);
-
-  function handleEdit() {
-    // EDIT
-  }
 
   async function toggleActive() {
     if (!file || !wgConfigFile) {
@@ -89,6 +86,11 @@ export default function ConnectionInfo() {
       return;
     }
 
+    if (wgConfigFile.active) {
+      toast("Stop the tunnel before deleting", { type: "error" });
+      return;
+    }
+
     try {
       dispatch(deleteFile(wgConfigFile));
       history.push("/");
@@ -114,9 +116,6 @@ export default function ConnectionInfo() {
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
             Connection Info
           </Text>
-          <Button color="whiteAlpha.800" size="xs" onClick={handleDelete}>
-            Delete
-          </Button>
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text fontWeight="medium">Interface:&nbsp;</Text>
@@ -149,9 +148,12 @@ export default function ConnectionInfo() {
           );
         })}
         <Flex justify="flex-end" mt="auto">
-          <Button size="sm" onClick={handleEdit}>
-            Edit
-          </Button>
+          <DialogButton
+            header="Are you sure?"
+            body="You cannot recover this file after deleting."
+            onConfirm={handleDelete}
+            launchButtonText="Delete"
+          />
           <Button
             color="whiteAlpha.800"
             colorScheme="orange"
