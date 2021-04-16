@@ -105,7 +105,7 @@ export default function NewConnection() {
             size="xs"
             w="50%"
             ml="2"
-            value={file?.name}
+            value={file ? file.name : ""}
             readOnly
           />
         </Flex>
@@ -119,7 +119,7 @@ export default function NewConnection() {
             mt="2"
             w="100%"
             h="100%"
-            value={file?.data}
+            value={file ? file.data : ""}
             readOnly
           />
         </Flex>
