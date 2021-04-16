@@ -150,7 +150,7 @@ export default function ConnectionInfo() {
           );
         })}
         <Flex direction="column" mt="4" w="100%" h="100%">
-          <Text>Interface:</Text>
+          <Text fontWeight="medium">Interface:&nbsp;</Text>
           <Textarea
             bg="gray.300"
             borderColor="transparent"
