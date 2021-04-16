@@ -24,13 +24,13 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
 
       case WgConfigTypes.deleteFile: {
         const { filename } = action.payload;
-        draft.files = draft.files.filter(file => file.name === filename);
+        draft.files = draft.files.filter((file) => file.name !== filename);
         break;
       }
 
       case WgConfigTypes.updateStatus: {
         const { currentConnectionName } = action.payload;
-        draft.files = draft.files.map(file => {
+        draft.files = draft.files.map((file) => {
           file.active = file.name === currentConnectionName;
 
           if (file.active) {
