@@ -10,7 +10,7 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { deleteFile } from "../store/modules/wgConfig/action";
-import { StoreState, WgConfigState } from "../types/store";
+import { StoreState, WgConfigFile, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
@@ -22,6 +22,7 @@ export default function ConnectionInfo() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [file, setFile] = useState<WgConfig>();
+  const [wgConfigFile, setWgConfigFile] = useState<WgConfigFile>();
   const { name } = useParams<ConnectionParam>();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
@@ -39,19 +40,34 @@ export default function ConnectionInfo() {
     config.parse(data);
 
     setFile(config);
+    setWgConfigFile(files.find(f => f.name === name));
   }, [name]);
 
   function handleEdit() {
     // EDIT
   }
 
-  function handleActivate() {
-    // ACTIVATE / DEACTIVATE
+  async function toggleActive() {
+    if (!file || !wgConfigFile) {
+      toast("Could not load config file", { type: "error" });
+      return;
+    }
+
+    const config = new WgConfig({ filePath: wgConfigFile.path })
+    await config.parseFile();
+
+    try {
+      if (wgConfigFile.active) {
+        await config.down();
+      } else {
+        await config.up();
+      }
+    } catch (e) {
+      toast(e.message, { type: "error" });
+    }
   }
 
   async function handleDelete() {
-    const wgConfigFile = files.find(f => f.name === name);
-
     if (!wgConfigFile) {
       toast(`Could not find config for ${name}`, { type: "error" });
       return;
@@ -125,9 +141,9 @@ export default function ConnectionInfo() {
             colorScheme="orange"
             size="sm"
             ml="4"
-            onClick={handleActivate}
+            onClick={toggleActive}
           >
-            Deactivate
+            {(wgConfigFile && wgConfigFile.active) ? "Deactivate" : "Activate"}
           </Button>
         </Flex>
       </Flex>

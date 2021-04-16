@@ -22,12 +22,14 @@ export function fetchFiles() {
     const filenames = fs.readdirSync(userDataPath);
     const files = await Promise.all(
       filenames.map(async (filename: string) => {
-        const config = new WgConfig({ filePath: path.join(userDataPath, filename) });
+        const filePath = path.join(userDataPath, filename);
+        const config = new WgConfig({ filePath });
         await config.parseFile();
 
         const name = filename.split(".")[0];
         return {
           name,
+          path: filePath,
           address: config.wgInterface.address,
           lastConnectAt: "never",
           active: name === curConName,
@@ -61,6 +63,7 @@ export function addFile(name: string, data: string) {
 
   const wgConfigFile: WgConfigFile = {
     name: name.split(".")[0],
+    path: filePath,
     address: config.wgInterface.address,
     lastConnectAt: "never",
     active: false,

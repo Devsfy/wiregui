@@ -1,5 +1,6 @@
 export interface WgConfigFile {
   name: string;
+  path: string;
   address: string[] | undefined;
   lastConnectAt: string;
   active: boolean;
