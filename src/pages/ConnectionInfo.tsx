@@ -100,7 +100,7 @@ export default function ConnectionInfo() {
         </Flex>
         {file?.peers?.map((peer) => {
           return (
-            <div key={peer.endpoint}>
+            <div key={peer.publicKey}>
               <Flex align="center" mt="2" w="100%">
                 <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
                 <Text>{peer.allowedIps}</Text>
