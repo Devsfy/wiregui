@@ -9,7 +9,7 @@ import { WgConfig } from "wireguard-tools";
 import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
-import { getCurrentConnectionName } from "../utils";
+import { getCurrentConnectionName, startConnection, stopConnection } from "../utils";
 import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
 import {
   AppState,
@@ -60,7 +60,7 @@ export default function ConnectionInfo() {
     }
 
     try {
-      let curConName = await getCurrentConnectionName();
+      const curConName = await getCurrentConnectionName();
       if (curConName && curConName !== wgConfigFile.name) {
         toast("Another tunnel is already running, deactivate it first.", {
           type: "error",
@@ -68,19 +68,15 @@ export default function ConnectionInfo() {
         return;
       }
 
-      const config = new WgConfig({ filePath: wgConfigFile.path });
-      await config.parseFile();
-
       if (wgConfigFile.active) {
-        await config.down();
+        await stopConnection(wgConfigFile.path);
+        dispatch(updateStatus(""));
         toast(`Deactivated ${wgConfigFile.name}`, { type: "success" });
       } else {
-        await config.up();
+        await startConnection(wgConfigFile.path);
+        dispatch(updateStatus(wgConfigFile.name));
         toast(`Activated ${wgConfigFile.name}`, { type: "success" });
       }
-
-      curConName = await getCurrentConnectionName();
-      dispatch(updateStatus(curConName));
     } catch (e) {
       toast(e.message, { type: "error" });
     }
