@@ -32,6 +32,12 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
         const { currentConnectionName } = action.payload;
         draft.files = draft.files.map(file => {
           file.active = file.name === currentConnectionName;
+
+          if (file.active) {
+            file.lastConnectAt = new Date().toISOString();
+            localStorage.setItem(file.name, file.lastConnectAt);
+          }
+
           return file;
         });
         break;

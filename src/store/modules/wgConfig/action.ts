@@ -27,11 +27,12 @@ export function fetchFiles() {
         await config.parseFile();
 
         const name = filename.split(".")[0];
+        const lastConnectAt = localStorage.getItem(name);
         return {
           name,
           path: filePath,
           address: config.wgInterface.address,
-          lastConnectAt: "never",
+          lastConnectAt,
           active: name === curConName,
         };
       })
@@ -61,11 +62,12 @@ export function addFile(name: string, data: string) {
   const config = new WgConfig({});
   config.parse(data);
 
+  const lastConnectAt = localStorage.getItem(name);
   const wgConfigFile: WgConfigFile = {
     name: name.split(".")[0],
     path: filePath,
     address: config.wgInterface.address,
-    lastConnectAt: "never",
+    lastConnectAt,
     active: false,
   };
 

@@ -1,5 +1,6 @@
 import React from "react";
 
+import { formatDistance } from "date-fns";
 import { Flex, Box, Text } from "@chakra-ui/react";
 
 import { WgConfigFile } from "../../types/store";
@@ -37,7 +38,7 @@ export default function ConnectionItem({
         </Text>
         <Flex color="whiteAlpha.600" justify="space-between">
           {address && <Text fontSize="xs">{address[0]}</Text>}
-          <Text fontSize="xs">{lastConnectAt}</Text>
+          <Text fontSize="xs">{lastConnectAt ? formatDistance(new Date(lastConnectAt), new Date(), { addSuffix: true }) : "never"}</Text>
         </Flex>
       </Flex>
     </Flex>
