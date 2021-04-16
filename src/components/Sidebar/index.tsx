@@ -27,7 +27,7 @@ export default function Sidebar() {
   }
 
   return (
-    <Flex bg="gray.200" direction="column" w="200px">
+    <Flex bg="gray.200" direction="column" w="350px">
       <Box px="4" pt="4" w="100%">
         <Flex justify="center">
           <NewConnection />
