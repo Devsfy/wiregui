@@ -77,7 +77,8 @@ export default function NewConnection() {
         direction="column"
         p="4"
         w="575px"
-        h="625px"
+        h="auto"
+        maxH="625px"
         mx="auto"
         mt="8"
       >
@@ -85,13 +86,15 @@ export default function NewConnection() {
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
             New Connection
           </Text>
-          <Button size="xs" onClick={() => hiddenInput?.click()}>Import</Button>
+          <Button size="xs" onClick={() => hiddenInput?.click()}>
+            Import
+          </Button>
           <input
             hidden
             type="file"
             accept=".conf"
             onChange={handleImport}
-            ref={el => setHiddenInput(el)}
+            ref={(el) => setHiddenInput(el)}
           ></input>
         </Flex>
         <Flex align="center" mt="4" w="100%">

@@ -114,7 +114,8 @@ export default function ConnectionInfo() {
         direction="column"
         p="4"
         w="575px"
-        h="625px"
+        h="auto"
+        maxH="625px"
         mx="auto"
         mt="8"
       >
