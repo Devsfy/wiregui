@@ -99,20 +99,22 @@ export default function ConnectionInfo() {
           {file && <Text>{file.wgInterface.dns}</Text>}
         </Flex>
         {file?.peers?.map((peer) => {
-          <Flex>
-            <Flex align="center" mt="2" w="100%">
-              <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
-              <Text>{peer.allowedIps}</Text>
-            </Flex>
-            <Flex align="center" mt="2" w="100%">
-              <Text fontWeight="medium">Endpoint:&nbsp;</Text>
-              <Text>{peer.endpoint}</Text>
-            </Flex>
-            <Flex align="center" mt="2" w="100%">
-              <Text fontWeight="medium">Public key:&nbsp;</Text>
-              <Text>{peer.publicKey}</Text>
-            </Flex>
-          </Flex>
+          return (
+            <div key={peer.endpoint}>
+              <Flex align="center" mt="2" w="100%">
+                <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
+                <Text>{peer.allowedIps}</Text>
+              </Flex>
+              <Flex align="center" mt="2" w="100%">
+                <Text fontWeight="medium">Endpoint:&nbsp;</Text>
+                <Text>{peer.endpoint}</Text>
+              </Flex>
+              <Flex align="center" mt="2" w="100%">
+                <Text fontWeight="medium">Public key:&nbsp;</Text>
+                <Text>{peer.publicKey}</Text>
+              </Flex>
+            </div>
+          );
         })}
         <Flex justify="flex-end" mt="auto">
           <Button size="sm" onClick={handleEdit}>
