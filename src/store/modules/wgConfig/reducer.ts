@@ -24,7 +24,7 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
 
       case WgConfigTypes.deleteFile: {
         const { filename } = action.payload;
-        draft.files = draft.files.filter((file) => file.name !== filename);
+        draft.files = draft.files.filter((file) => file.name === filename);
         break;
       }
 
