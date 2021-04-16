@@ -7,6 +7,8 @@ if (require("electron-squirrel-startup")) { // eslint-disable-line global-requir
   app.quit();
 }
 
+const isDevelopement = (process.env.NODE_ENV !== "production");
+
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -23,8 +25,10 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // Open the DevTools if in development mode.
+  if (isDevelopement) {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished
