@@ -33,7 +33,7 @@ export default function DialogButton({
   cancelButtonText = "Cancel",
   confirmButtonText = "Confirm",
 }: DialogButtonProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
 
   function onHandleConfirm() {
@@ -52,7 +52,9 @@ export default function DialogButton({
 
   return (
     <>
-      <Button onClick={onOpen}>{launchButtonText}</Button>
+      <Button onClick={onOpen} size="sm" ml="4">
+        {launchButtonText}
+      </Button>
       <AlertDialog
         motionPreset={motionPreset}
         leastDestructiveRef={cancelRef}
@@ -65,9 +67,7 @@ export default function DialogButton({
         <AlertDialogContent>
           <AlertDialogHeader>{header}</AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
-            {body}
-          </AlertDialogBody>
+          <AlertDialogBody>{body}</AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onHandleCancel}>
               {cancelButtonText}
@@ -79,5 +79,5 @@ export default function DialogButton({
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }
