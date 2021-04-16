@@ -1,10 +1,16 @@
 import { app, BrowserWindow } from "electron";
+import * as path from "path";
 import "./ipc";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) { // eslint-disable-line global-require
   app.quit();
+}
+
+// Get app icon from assets folder
+function getIcon() {
+  return path.resolve(path.join(__dirname, "assets", "icons", "icon.png"));
 }
 
 const isDevelopement = (process.env.NODE_ENV !== "production");
@@ -20,6 +26,7 @@ const createWindow = (): void => {
       contextIsolation: false,
       nodeIntegration: true,
     },
+    icon: getIcon(),
   });
 
   // and load the index.html of the app.
