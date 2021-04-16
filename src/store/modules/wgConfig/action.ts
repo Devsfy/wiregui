@@ -5,6 +5,7 @@ import { ipcRenderer } from "electron";
 import { WgConfig } from "wireguard-tools";
 
 import { WgConfigTypes, WgConfigFile } from "../../../types/store";
+import { getCurrentConnectionName } from "../../../utils";
 
 export function fetchFiles() {
   return async function(dispatch: Dispatch<unknown>) {
@@ -17,16 +18,19 @@ export function fetchFiles() {
       fs.mkdirSync(userDataPath);
     }
   
+    const curConName = await getCurrentConnectionName();
     const filenames = fs.readdirSync(userDataPath);
     const files = await Promise.all(
       filenames.map(async (filename: string) => {
         const config = new WgConfig({ filePath: path.join(userDataPath, filename) });
         await config.parseFile();
+
+        const name = filename.split(".")[0];
         return {
-          name: filename.split(".")[0],
+          name,
           address: config.wgInterface.address,
           lastConnectAt: "never",
-          active: false,
+          active: name === curConName,
         };
       })
     );
