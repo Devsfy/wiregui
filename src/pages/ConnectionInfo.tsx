@@ -5,12 +5,18 @@ import { useSelector, useDispatch } from "react-redux";
 import * as fs from "fs";
 import * as path from "path";
 import { WgConfig } from "wireguard-tools";
-import { Button, Flex, Text, Textarea } from "@chakra-ui/react";
+
+import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { getCurrentConnectionName } from "../utils";
 import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
-import { AppState, StoreState, WgConfigFile, WgConfigState } from "../types/store";
+import {
+  AppState,
+  StoreState,
+  WgConfigFile,
+  WgConfigState,
+} from "../types/store";
 
 import DialogButton from "../components/DialogButton";
 import Content from "../components/Content";
@@ -33,22 +39,18 @@ export default function ConnectionInfo() {
   );
 
   useEffect(() => {
-    const filePath = path.join(
-      userDataPath,
-      "configurations",
-      `${name}.conf`,
-    );
+    const filePath = path.join(userDataPath, "configurations", `${name}.conf`);
 
     const data = fs.readFileSync(filePath, "utf-8");
     const config = new WgConfig({});
     config.parse(data);
 
     setFile(config);
-    setWgConfigFile(files.find(f => f.name === name));
+    setWgConfigFile(files.find((f) => f.name === name));
   }, [name]);
 
   useEffect(() => {
-    setWgConfigFile(files.find(f => f.name === name));
+    setWgConfigFile(files.find((f) => f.name === name));
   }, [files]);
 
   async function toggleActive() {
@@ -60,11 +62,13 @@ export default function ConnectionInfo() {
     try {
       let curConName = await getCurrentConnectionName();
       if (curConName && curConName !== wgConfigFile.name) {
-        toast("Another tunnel is already running, deactivate it first.", { type: "error" });
+        toast("Another tunnel is already running, deactivate it first.", {
+          type: "error",
+        });
         return;
       }
 
-      const config = new WgConfig({ filePath: wgConfigFile.path })
+      const config = new WgConfig({ filePath: wgConfigFile.path });
       await config.parseFile();
 
       if (wgConfigFile.active) {
@@ -133,7 +137,7 @@ export default function ConnectionInfo() {
         </Flex>
         {file?.peers?.map((peer) => {
           return (
-            <div key={peer.publicKey}>
+            <Box key={peer.publicKey}>
               <Flex align="center" mt="2" w="100%">
                 <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
                 <Text>{peer.allowedIps?.join(", ")}</Text>
@@ -146,7 +150,7 @@ export default function ConnectionInfo() {
                 <Text fontWeight="medium">Public key:&nbsp;</Text>
                 <Text>{peer.publicKey}</Text>
               </Flex>
-            </div>
+            </Box>
           );
         })}
         <Flex direction="column" mt="4" w="100%" h="100%">
@@ -163,7 +167,7 @@ export default function ConnectionInfo() {
             readOnly
           />
         </Flex>
-        <Flex justify="flex-end" mt="auto">
+        <Flex justify="flex-end" mt="4">
           <DialogButton
             header="Are you sure?"
             body="You cannot recover this file after deleting."
@@ -177,7 +181,7 @@ export default function ConnectionInfo() {
             ml="4"
             onClick={toggleActive}
           >
-            {(wgConfigFile && wgConfigFile.active) ? "Deactivate" : "Activate"}
+            {wgConfigFile && wgConfigFile.active ? "Deactivate" : "Activate"}
           </Button>
         </Flex>
       </Flex>
