@@ -28,6 +28,15 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
         break;
       }
 
+      case WgConfigTypes.updateStatus: {
+        const { currentConnectionName } = action.payload;
+        draft.files = draft.files.map(file => {
+          file.active = file.name === currentConnectionName;
+          return file;
+        });
+        break;
+      }
+
       default: {
         break;
       }

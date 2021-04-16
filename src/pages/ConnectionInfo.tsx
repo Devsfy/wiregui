@@ -9,7 +9,8 @@ import { WgConfig } from "wireguard-tools";
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
-import { deleteFile } from "../store/modules/wgConfig/action";
+import { getCurrentConnectionName } from "../utils";
+import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
 import { StoreState, WgConfigFile, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
@@ -43,6 +44,10 @@ export default function ConnectionInfo() {
     setWgConfigFile(files.find(f => f.name === name));
   }, [name]);
 
+  useEffect(() => {
+    setWgConfigFile(files.find(f => f.name === name));
+  }, [files]);
+
   function handleEdit() {
     // EDIT
   }
@@ -53,15 +58,26 @@ export default function ConnectionInfo() {
       return;
     }
 
-    const config = new WgConfig({ filePath: wgConfigFile.path })
-    await config.parseFile();
-
     try {
+      let curConName = await getCurrentConnectionName();
+      if (curConName && curConName !== wgConfigFile.name) {
+        toast("Another tunnel is already running, deactivate it first.", { type: "error" });
+        return;
+      }
+
+      const config = new WgConfig({ filePath: wgConfigFile.path })
+      await config.parseFile();
+
       if (wgConfigFile.active) {
         await config.down();
+        toast(`Deactivated ${wgConfigFile.name}`, { type: "success" });
       } else {
         await config.up();
+        toast(`Activated ${wgConfigFile.name}`, { type: "success" });
       }
+
+      curConName = await getCurrentConnectionName();
+      dispatch(updateStatus(curConName));
     } catch (e) {
       toast(e.message, { type: "error" });
     }

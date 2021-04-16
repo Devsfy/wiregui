@@ -93,3 +93,12 @@ export function deleteFile(file: WgConfigFile) {
     },
   };
 }
+
+export function updateStatus(currentConnectionName: string) {
+  return {
+    type: WgConfigTypes.updateStatus,
+    payload: {
+      currentConnectionName,
+    },
+  };
+}

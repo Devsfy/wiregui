@@ -45,6 +45,7 @@ export default function Sidebar() {
           >
             <ConnectionItem
               name={file.name}
+              path={file.path}
               address={file.address}
               lastConnectAt={file.lastConnectAt}
               active={file.active}
