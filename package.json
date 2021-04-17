@@ -17,7 +17,8 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./src/assets/icons/icon.png"
+        "icon": "./src/assets/icons/icon.png",
+        "executableName": "wiregui"
       },
       "makers": [
         {
