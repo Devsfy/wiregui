@@ -35,9 +35,12 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools if in development mode.
   if (isDevelopement) {
+    // Open the DevTools if in development mode.
     mainWindow.webContents.openDevTools();
+  } else {
+    // Remove menu from production build.
+    mainWindow.removeMenu();
   }
 };
 
