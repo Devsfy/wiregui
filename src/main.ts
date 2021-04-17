@@ -8,12 +8,15 @@ if (require("electron-squirrel-startup")) { // eslint-disable-line global-requir
   app.quit();
 }
 
+const isDevelopement = (process.env.NODE_ENV !== "production");
+
 // Get app icon from assets folder
 function getIcon() {
+  if (isDevelopement) {
+    return path.resolve(path.join(__dirname, "..", "..", "src", "assets", "icons", "icon.png"));
+  }
   return path.resolve(path.join(__dirname, "assets", "icons", "icon.png"));
 }
-
-const isDevelopement = (process.env.NODE_ENV !== "production");
 
 const createWindow = (): void => {
   // Create the browser window.
