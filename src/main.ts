@@ -15,7 +15,7 @@ function getIcon() {
   if (isDevelopement) {
     return path.resolve(path.join(__dirname, "..", "..", "src", "assets", "icons", "icon.png"));
   }
-  return path.resolve(path.join(__dirname, "assets", "icons", "icon.png"));
+  return path.resolve(path.join(__dirname, "..", "renderer", "icons", "icon.png"));
 }
 
 const createWindow = (): void => {
