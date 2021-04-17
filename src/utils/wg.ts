@@ -16,21 +16,23 @@ export async function startConnection(filePath: string): Promise<void> {
   if (process.platform === "win32") {
     await run(`wireguard /installtunnelservice ${filePath}`);
   } else {
-    const config = new WgConfig({ filePath });
-    await config.parseFile();
-    await config.up();
+    const config = new WgConfig({});
+    await config.up(getConNameFromPath(filePath));
   }
 }
 
 export async function stopConnection(filePath: string): Promise<void> {
   if (process.platform === "win32") {
-    const noextension = filePath.split(".")[0];
-    const dirnames = noextension.split("\\");
-    const name = dirnames[dirnames.length - 1];
-    await run(`wireguard /uninstalltunnelservice ${name}`);
+    await run(`wireguard /uninstalltunnelservice ${getConNameFromPath(filePath)}`);
   } else {
-    const config = new WgConfig({ filePath });
-    await config.parseFile();
-    await config.down();
+    const config = new WgConfig({});
+    await config.down(getConNameFromPath(filePath));
   }
+}
+
+function getConNameFromPath(filePath: string): string {
+  const pathSections = filePath.split(".");
+  const noextension = pathSections[pathSections.length - 2];
+  const dirnames = noextension.split(process.platform === "win32" ? "\\" : "/");
+  return dirnames[dirnames.length - 1];
 }
