@@ -6,7 +6,7 @@ import { Button, Flex, Input, Textarea, Text } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import { addFile } from "../store/modules/wgConfig/action";
-import { StoreState, AppState } from "../types/store";
+import { StoreState, AppState, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
@@ -23,6 +23,9 @@ export default function NewConnection() {
   const [hiddenInput, setHiddenInput] = useState<HTMLInputElement | null>();
   const { userDataPath } = useSelector<StoreState, AppState>(
     (state) => state.app
+  );
+  const { files } = useSelector<StoreState, WgConfigState>(
+    (state) => state.wgConfig
   );
 
   function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
@@ -60,9 +63,15 @@ export default function NewConnection() {
       return;
     }
 
+    const name = file.name.split(".")[0];
+    if (files.some(f => f.name === name)) {
+      toast(`A connection named ${name} already exists`, { type: "error" });
+      return;
+    }
+
     try {
       dispatch(addFile(file.name, file.data, userDataPath));
-      history.push(`/connection/${file.name.split(".")[0]}`);
+      history.push(`/connection/${name}`);
     } catch (e) {
       toast(e.message, { type: "error" });
     }
