@@ -1,10 +1,18 @@
-import { WgConfig } from "wireguard-tools";
 import { run } from "./run";
 
 export async function getCurrentConnectionName(): Promise<string> {
   const data = await run("wg show");
+
   if (data.stderr) {
-    throw new Error(data.stderr);
+    throw new Error(Buffer.isBuffer(data.stderr) ? data.stderr.toString("utf-8") : data.stderr);
+  }
+
+  if (!data.stdout) {
+    return "";
+  }
+
+  if (Buffer.isBuffer(data.stdout)) {
+    data.stdout = data.stdout.toString("utf-8");
   }
 
   const lines = data.stdout.split(/\n/);
@@ -12,27 +20,23 @@ export async function getCurrentConnectionName(): Promise<string> {
   return connectionName;
 }
 
-export async function startConnection(filePath: string): Promise<void> {
+export async function start(filePath: string): Promise<void> {
   if (process.platform === "win32") {
     await run(`wireguard /installtunnelservice ${filePath}`);
   } else {
-    const config = new WgConfig({});
-    await config.up(getConNameFromPath(filePath));
+    await run(`wg-quick up ${getNameFromPath(filePath)}`);
   }
 }
 
-export async function stopConnection(filePath: string): Promise<void> {
+export async function stop(filePath: string): Promise<void> {
   if (process.platform === "win32") {
-    await run(`wireguard /uninstalltunnelservice ${getConNameFromPath(filePath)}`);
+    await run(`wireguard /uninstalltunnelservice ${getNameFromPath(filePath)}`);
   } else {
-    const config = new WgConfig({});
-    await config.down(getConNameFromPath(filePath));
+    await run(`wg-quick down ${getNameFromPath(filePath)}`);
   }
 }
 
-function getConNameFromPath(filePath: string): string {
-  const pathSections = filePath.split(".");
-  const noextension = pathSections[pathSections.length - 2];
-  const dirnames = noextension.split(process.platform === "win32" ? "\\" : "/");
-  return dirnames[dirnames.length - 1];
+function getNameFromPath(filePath: string): string {
+  const filename = filePath.replace(/^.*[\\/]/, "");
+  return filename.substring(0, filename.lastIndexOf("."))
 }

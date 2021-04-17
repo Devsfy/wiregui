@@ -17,7 +17,7 @@ export function fetchFiles(userDataPath: string) {
       fs.mkdirSync(configPath);
     }
   
-    const curConName = await getCurrentConnectionName();
+    const currentConnectionName = await getCurrentConnectionName();
     const filenames = fs.readdirSync(configPath);
     const files = await Promise.all(
       filenames.map(async (filename: string) => {
@@ -32,11 +32,12 @@ export function fetchFiles(userDataPath: string) {
           path: filePath,
           address: config.wgInterface.address,
           lastConnectAt,
-          active: name === curConName,
+          active: name === currentConnectionName,
         };
       })
     );
 
+    dispatch(updateStatus(currentConnectionName));
     dispatch(fetchFilesSuccess(files));
   }
 }

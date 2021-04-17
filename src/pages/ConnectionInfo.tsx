@@ -9,7 +9,7 @@ import { WgConfig } from "wireguard-tools";
 import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
-import { getCurrentConnectionName, startConnection, stopConnection } from "../utils";
+import * as WireGuard from "../utils/wg";
 import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
 import {
   AppState,
@@ -31,7 +31,7 @@ export default function ConnectionInfo() {
   const [file, setFile] = useState<WgConfig>();
   const [wgConfigFile, setWgConfigFile] = useState<WgConfigFile>();
   const { name } = useParams<ConnectionParam>();
-  const { files } = useSelector<StoreState, WgConfigState>(
+  const { currentConnectionName, files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
   const { userDataPath } = useSelector<StoreState, AppState>(
@@ -60,8 +60,7 @@ export default function ConnectionInfo() {
     }
 
     try {
-      const curConName = await getCurrentConnectionName();
-      if (curConName && curConName !== wgConfigFile.name) {
+      if (currentConnectionName && currentConnectionName !== wgConfigFile.name) {
         toast("Another tunnel is already running, deactivate it first.", {
           type: "error",
         });
@@ -69,11 +68,11 @@ export default function ConnectionInfo() {
       }
 
       if (wgConfigFile.active) {
-        await stopConnection(wgConfigFile.path);
+        await WireGuard.stop(wgConfigFile.path);
         dispatch(updateStatus(""));
         toast(`Deactivated ${wgConfigFile.name}`, { type: "success" });
       } else {
-        await startConnection(wgConfigFile.path);
+        await WireGuard.start(wgConfigFile.path);
         dispatch(updateStatus(wgConfigFile.name));
         toast(`Activated ${wgConfigFile.name}`, { type: "success" });
       }

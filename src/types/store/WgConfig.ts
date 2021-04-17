@@ -15,4 +15,5 @@ export enum WgConfigTypes {
 
 export interface WgConfigState {
   files: WgConfigFile[];
+  currentConnectionName: string;
 }

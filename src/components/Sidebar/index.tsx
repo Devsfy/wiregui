@@ -1,29 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
-import { fetchFiles } from "../../store/modules/wgConfig/action";
-
-import { AppState, StoreState, WgConfigState } from "../../types/store";
+import { StoreState, WgConfigState } from "../../types/store";
 
 import NewConnection from "./NewConnection";
 import ConnectionItem from "./ConnectionItem";
 
 export default function Sidebar() {
   const history = useHistory();
-  const dispatch = useDispatch();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
-  const { userDataPath } = useSelector<StoreState, AppState>(
-    (state) => state.app
-  );
-
-  useEffect(() => {
-    dispatch(fetchFiles(userDataPath));
-  }, []);
 
   function handleRedirect(param: string) {
     history.push(`/connection/${param}`);

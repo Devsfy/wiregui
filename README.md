@@ -12,13 +12,3 @@ Wire GUI is a cross-platform graphical user interface for [wireguard](https://ww
 ## Download
 
 Soon
-
-## Known Issues
-
-### When I try to toggle a tunnel it pops a dialog saying `access denied`
-
-Currently the application needs to be ran as administrator to be able to toggle the tunnels, restart the application as administrator.
-
-### Command  failed: Operation not permitted
-
-Same problem as above, the application needs to be ran as `sudo` in order to toggle a tunnel, you can start with `sudo wiregui`.

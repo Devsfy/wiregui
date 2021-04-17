@@ -112,6 +112,7 @@
     "react-toastify": "^7.0.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "sudo-prompt": "^9.2.1",
     "wireguard-tools": "^0.1.0"
   }
 }
