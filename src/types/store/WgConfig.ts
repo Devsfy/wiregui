@@ -1,8 +1,28 @@
 export interface WgConfigFile {
+  /**
+   * Name of the connection without extension
+   */
   name: string;
+
+  /**
+   * Absolute path of file
+   */
   path: string;
+
+  /**
+   * Addresses of connection
+   */
   address: string[] | undefined;
+
+  /**
+   * Date when connection was last connected as ISO String
+   */
   lastConnectAt: string | null;
+
+  /**
+   * If the connection is active,
+   * may be unsynced with wireguard if changing via CLI
+   */
   active: boolean;
 }
 
