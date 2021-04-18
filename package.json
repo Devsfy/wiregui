@@ -1,6 +1,6 @@
 {
   "name": "wiregui",
-  "productName": "Wire GUI",
+  "productName": "wiregui",
   "version": "1.0.0",
   "description": "A graphical user interface for wireguard",
   "main": ".webpack/main",
