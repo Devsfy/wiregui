@@ -13,7 +13,7 @@ Wire GUI is a cross-platform graphical user interface for [wireguard](https://ww
 - Show date when the connection was last connected
 - Display current connected tunnel
 
-![Wire GUI Picture](https://i.imgur.com/c037ciC.png)
+![Wire GUI Picture](https://i.imgur.com/wWxEyJH.png)
 
 ## Download
 
