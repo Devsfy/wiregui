@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { version } from "../../../package.json";
 
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
@@ -20,7 +21,7 @@ export default function Sidebar() {
   }
 
   return (
-    <Flex bg="gray.200" direction="column" w="350px">
+    <Flex bg="gray.200" direction="column" w="350px" position="relative">
       <Box px="4" pt="4" w="100%">
         <Flex justify="center">
           <NewConnection />
@@ -46,6 +47,16 @@ export default function Sidebar() {
           </Link>
         ))}
       </Flex>
+      <Text
+          position="absolute"
+          bottom="0"
+          w="100%"
+          textAlign="center"
+          fontSize="smaller"
+          color="whiteAlpha.500"
+        >
+          v{version}
+        </Text>
     </Flex>
   );
 }
