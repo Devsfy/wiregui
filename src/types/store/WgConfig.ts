@@ -1,6 +1,6 @@
 export interface WgConfigFile {
   /**
-   * Name of the connection without extension
+   * Name of the file without extension
    */
   name: string;
 
