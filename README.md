@@ -1,8 +1,10 @@
+<p align="center">
+  <img width="300" src="https://i.imgur.com/9UGXWYE.png">
+</p>
+
 # Wire GUI
 
 Wire GUI is a cross-platform graphical user interface for [wireguard](https://www.wireguard.com/).
-
-![Wire GUI Picture](https://i.imgur.com/c037ciC.png)
 
 ## Features
 
@@ -10,6 +12,8 @@ Wire GUI is a cross-platform graphical user interface for [wireguard](https://ww
 - List all your saved connections
 - Show date when the connection was last connected
 - Display current connected tunnel
+
+![Wire GUI Picture](https://i.imgur.com/c037ciC.png)
 
 ## Download
 
