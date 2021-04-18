@@ -1,23 +1,35 @@
 import { run } from "./run";
 
 export async function getCurrentConnectionName(): Promise<string> {
-  const data = await run("wg show");
+  try {
+    const data = await run("wg show", false);
+    if (data.stderr) {
+      throw new Error(Buffer.isBuffer(data.stderr) ? data.stderr.toString("utf-8") : data.stderr);
+    }
+  
+    if (!data.stdout) {
+      return "";
+    }
+  
+    if (Buffer.isBuffer(data.stdout)) {
+      data.stdout = data.stdout.toString("utf-8");
+    }
+  
+    const lines = data.stdout.split(/\n/);
+    const connectionName = lines[0].split(" ")[1]?.replace(/(\r\n|\n|\r)/gm, "");
+  
+    return connectionName;
+  } catch (e) {
+    if (!e.stderr) {
+      throw new Error(e.message);
+    }
 
-  if (data.stderr) {
-    throw new Error(Buffer.isBuffer(data.stderr) ? data.stderr.toString("utf-8") : data.stderr);
+    const splittedText: string[] = e.stderr.split(":");
+    const indexOfName = splittedText[0].lastIndexOf(" ");
+    const connectionName = splittedText[0].substring(indexOfName + 1, splittedText[0].length);
+
+    return connectionName;
   }
-
-  if (!data.stdout) {
-    return "";
-  }
-
-  if (Buffer.isBuffer(data.stdout)) {
-    data.stdout = data.stdout.toString("utf-8");
-  }
-
-  const lines = data.stdout.split(/\n/);
-  const connectionName = lines[0].split(" ")[1]?.replace(/(\r\n|\n|\r)/gm, "");
-  return connectionName;
 }
 
 export async function start(filePath: string): Promise<void> {
