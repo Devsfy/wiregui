@@ -24,9 +24,17 @@ export async function getCurrentConnectionName(): Promise<string> {
       throw new Error(e.message);
     }
 
-    const splittedText: string[] = e.stderr.split(":");
-    const indexOfName = splittedText[0].lastIndexOf(" ");
-    const connectionName = splittedText[0].substring(indexOfName + 1, splittedText[0].length);
+    let connectionName = "";
+
+    if (process.platform === "win32") {
+      const splittedText: string[] = e.stderr.split("Unable to access interface");
+      const indexOfSymbol = splittedText[1].indexOf(":");
+      connectionName = splittedText[1].substring(1, indexOfSymbol);
+    } else {
+      const splittedText: string[] = e.stderr.split(":");
+      const indexOfName = splittedText[0].lastIndexOf(" ");
+      connectionName = splittedText[0].substring(indexOfName + 1, splittedText[0].length);
+    }
 
     return connectionName;
   }
