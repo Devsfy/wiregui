@@ -10,17 +10,12 @@ import { StoreState, AppState, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
-interface ConfFile {
-  name: string;
-  path: string;
-  data: string;
-}
-
 export default function NewConnection() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [file, setFile] = useState<ConfFile>();
   const [hiddenInput, setHiddenInput] = useState<HTMLInputElement | null>();
+  const [fileName, setFileName] = useState<string>();
+  const [interfaceText, setInterfaceText] = useState<string>();
   const { userDataPath } = useSelector<StoreState, AppState>(
     (state) => state.app
   );
@@ -37,11 +32,12 @@ export default function NewConnection() {
         reader.readAsText(currentFile, "utf-8");
         reader.onload = function (evt: ProgressEvent<FileReader>) {
           if (!evt.target) return;
-          setFile({
-            name: currentFile.name,
-            path: currentFile.path,
-            data: evt.target.result as string,
-          });
+
+          const data = evt.target.result as string;
+          const name = currentFile.name.split(".conf");
+
+          setFileName(name[0]);
+          setInterfaceText(data);
         };
 
         reader.onerror = function () {
@@ -58,23 +54,35 @@ export default function NewConnection() {
   }
 
   async function handleSave() {
-    if (!file) {
-      toast("No file selected!", { type: "error" });
+    if (!fileName || fileName.length === 0) {
+      toast("Name cannot be empty", { type: "error" });
       return;
     }
 
-    const name = file.name.split(".")[0];
-    if (files.some(f => f.name === name)) {
-      toast(`A connection named ${name} already exists`, { type: "error" });
+    if (!interfaceText || interfaceText.length === 0) {
+      toast("Interface cannot be empty", { type: "error" });
+      return;
+    }
+
+    if (files.some(f => f.name === fileName)) {
+      toast(`A connection named ${fileName} already exists`, { type: "error" });
       return;
     }
 
     try {
-      dispatch(addFile(file.name, file.data, userDataPath));
-      history.push(`/connection/${name}`);
+      dispatch(addFile(`${fileName}.conf`, interfaceText, userDataPath));
+      history.push(`/connection/${fileName}`);
     } catch (e) {
       toast(e.message, { type: "error" });
     }
+  }
+
+  function onNameChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setFileName(event.target.value);
+  }
+
+  function onInterfaceTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    setInterfaceText(event.target.value);
   }
 
   return (
@@ -114,8 +122,8 @@ export default function NewConnection() {
             size="xs"
             w="50%"
             ml="2"
-            value={file ? file.name : ""}
-            readOnly
+            value={fileName || ""}
+            onChange={onNameChange}
           />
         </Flex>
         <Flex direction="column" mt="4" w="100%" h="100%">
@@ -128,8 +136,8 @@ export default function NewConnection() {
             mt="2"
             w="100%"
             h="100%"
-            value={file ? file.data : ""}
-            readOnly
+            value={interfaceText || ""}
+            onChange={onInterfaceTextChange}
           />
         </Flex>
         <Flex justify="flex-end" mt="4">
@@ -140,7 +148,7 @@ export default function NewConnection() {
             colorScheme="orange"
             size="sm"
             ml="4"
-            disabled={!!file === false}
+            disabled={!fileName || !interfaceText}
             onClick={handleSave}
           >
             Save
