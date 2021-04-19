@@ -1,1 +1,1 @@
-import "./ipc-app";
+import "./ipcApp";

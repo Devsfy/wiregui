@@ -31,7 +31,7 @@ export default function ConnectionInfo() {
   const [file, setFile] = useState<WgConfig>();
   const [wgConfigFile, setWgConfigFile] = useState<WgConfigFile>();
   const { name } = useParams<ConnectionParam>();
-  const { currentConnectionName, files } = useSelector<StoreState, WgConfigState>(
+  const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
   const { userDataPath } = useSelector<StoreState, AppState>(
@@ -54,28 +54,16 @@ export default function ConnectionInfo() {
   }, [files]);
 
   async function toggleActive() {
-    if (!file || !wgConfigFile) {
+    if (!wgConfigFile) {
       toast("Could not load config file", { type: "error" });
       return;
     }
 
     try {
-      if (currentConnectionName && currentConnectionName !== wgConfigFile.name) {
-        toast("Another tunnel is already running, deactivate it first.", {
-          type: "error",
-        });
-        return;
-      }
-
-      if (wgConfigFile.active) {
-        await WireGuard.stop(wgConfigFile.path);
-        dispatch(updateStatus(""));
-        toast(`Deactivated ${wgConfigFile.name}`, { type: "success" });
-      } else {
-        await WireGuard.start(wgConfigFile.path);
-        dispatch(updateStatus(wgConfigFile.name));
-        toast(`Activated ${wgConfigFile.name}`, { type: "success" });
-      }
+      const started = await WireGuard.toggle(wgConfigFile.path);
+      const message = started ? "Activated" : "Deactivated";
+      toast(`${message} ${wgConfigFile.name}`, { type: "success" });
+      dispatch(updateStatus(started ? wgConfigFile.name : ""));
     } catch (e) {
       toast(e.message, { type: "error" });
     }
