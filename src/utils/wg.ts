@@ -56,6 +56,27 @@ export async function stop(filePath: string): Promise<void> {
   }
 }
 
+export async function toggle(filePath: string): Promise<boolean> {
+  const connectionName = getNameFromPath(filePath);
+  const currentConnectionName = await getCurrentConnectionName();
+
+  if (currentConnectionName && currentConnectionName !== connectionName) {
+    throw new Error("Another tunnel is already running, deactivate it first.");
+  }
+
+  let started = false;
+
+  if (currentConnectionName === connectionName) {
+    await stop(filePath);
+    started = false;
+  } else {
+    await start(filePath);
+    started = true;
+  }
+
+  return started;
+}
+
 function getNameFromPath(filePath: string): string {
   const filename = filePath.replace(/^.*[\\/]/, "");
   return filename.substring(0, filename.lastIndexOf("."))

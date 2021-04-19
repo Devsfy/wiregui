@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import { ipcRenderer } from "electron";
 import { checkWgIsInstalled } from "wireguard-tools";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -8,7 +9,8 @@ import AppProvider from "./context";
 import Routes from "./routes/index";
 import store from "./store";
 
-import { fetchFiles } from "./store/modules/wgConfig/action";
+import * as WireGuard from "./utils/wg";
+import { fetchFiles, updateStatus } from "./store/modules/wgConfig/action";
 import { AppState, StoreState } from "./types/store";
 
 function App() {
@@ -25,6 +27,17 @@ function App() {
         toast("Wireguard is not installed on the system.", { type: "error" });
       }
     }
+
+    ipcRenderer.on("toggleTunnel", async (event, args) => {
+      try {
+        const started = await WireGuard.toggle(args.path);
+        const message = started ? "Activated" : "Deactivated";
+        toast(`${message} ${args.name}`, { type: "success" });
+        dispatch(updateStatus(started ? args.name : ""));
+      } catch (e) {
+        toast(e.message, { type: "error" });
+      }
+    });
 
     check();
     dispatch(fetchFiles(userDataPath));

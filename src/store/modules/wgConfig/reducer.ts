@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
 import { produce } from "immer";
+import { ipcRenderer } from "electron";
 
 import { WgConfigTypes, WgConfigState } from "../../../types/store";
 
@@ -14,18 +15,33 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
       case WgConfigTypes.fetchFiles: {
         const { files } = action.payload;
         draft.files = files;
+        ipcRenderer.send("WgConfigStateChange", draft.files.map(file => ({
+          name: file.name,
+          path: file.path,
+          active: file.active,
+        })));
         break;
       }
 
       case WgConfigTypes.addFile: {
         const { file } = action.payload;
         draft.files.push(file);
+        ipcRenderer.send("WgConfigStateChange", draft.files.map(file => ({
+          name: file.name,
+          path: file.path,
+          active: file.active,
+        })));
         break;
       }
 
       case WgConfigTypes.deleteFile: {
         const { filename } = action.payload;
         draft.files = draft.files.filter((file) => file.name !== filename);
+        ipcRenderer.send("WgConfigStateChange", draft.files.map(file => ({
+          name: file.name,
+          path: file.path,
+          active: file.active,
+        })));
         break;
       }
 
@@ -43,6 +59,11 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
 
           return file;
         });
+        ipcRenderer.send("WgConfigStateChange", draft.files.map(file => ({
+          name: file.name,
+          path: file.path,
+          active: file.active,
+        })));
         break;
       }
 
