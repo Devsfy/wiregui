@@ -31,11 +31,16 @@ function App() {
     ipcRenderer.on("toggleTunnel", async (event, args) => {
       try {
         const started = await WireGuard.toggle(args.path);
-        const message = started ? "Activated" : "Deactivated";
-        toast(`${message} ${args.name}`, { type: "success" });
+        const action = started ? "Activated" : "Deactivated";
+        const message = `${action} ${args.name}`;
+
+        toast(message, { type: "success" });
+        new Notification("Wire GUI", { body: message });
+
         dispatch(updateStatus(started ? args.name : ""));
       } catch (e) {
         toast(e.message, { type: "error" });
+        new Notification("Wire GUI", { body: e.message });
       }
     });
 
