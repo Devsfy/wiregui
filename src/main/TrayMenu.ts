@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, Menu, MenuItem, MenuItemConstructorOptions, Tray } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  MenuItem,
+  MenuItemConstructorOptions,
+  Tray,
+} from "electron";
 import { getIconsPath } from "../utils";
 
 interface TunnelInfo {
@@ -7,6 +15,8 @@ interface TunnelInfo {
 }
 
 export class TrayMenu {
+  private isQuitting: boolean;
+
   private tunnels: TunnelInfo[];
 
   private tray: Tray;
@@ -15,9 +25,10 @@ export class TrayMenu {
 
   constructor(private readonly window: BrowserWindow, isDevelopement: boolean) {
     this.tunnels = [];
+    this.isQuitting = false;
 
     this.tray = new Tray(getIconsPath("icon_tray.png", isDevelopement));
-    this.tray.setToolTip("Wire GUI")
+    this.tray.setToolTip("Wire GUI");
     this.contextMenu = Menu.buildFromTemplate(this.mountTrayMenuItems());
     this.tray.setContextMenu(this.contextMenu);
 
@@ -25,6 +36,14 @@ export class TrayMenu {
       this.tunnels = args;
       this.contextMenu = Menu.buildFromTemplate(this.mountTrayMenuItems());
       this.tray.setContextMenu(this.contextMenu);
+    });
+
+    window.on("close", (event) => {
+      if (!this.isQuitting) {
+        event.preventDefault();
+        window.hide();
+      }
+      return false;
     });
   }
 
@@ -40,21 +59,24 @@ export class TrayMenu {
       },
     ];
 
-    const body: (MenuItemConstructorOptions | MenuItem)[] = this.tunnels.map((tunnel) => {
-      return {
-        label: tunnel.active ? `${tunnel.name} (active)` : tunnel.name,
-        type: "normal",
-        click: () => {
-          this.window.webContents.send("toggleTunnel", tunnel);
-        }
+    const body: (MenuItemConstructorOptions | MenuItem)[] = this.tunnels.map(
+      (tunnel) => {
+        return {
+          label: tunnel.active ? `${tunnel.name} (active)` : tunnel.name,
+          type: "normal",
+          click: () => {
+            this.window.webContents.send("toggleTunnel", tunnel);
+          },
+        };
       }
-    });
+    );
 
     const footer: (MenuItemConstructorOptions | MenuItem)[] = [
       {
-        label: "Quit Wire GUI",
+        label: "Quit",
         type: "normal",
         click: () => {
+          this.isQuitting = true;
           app.quit();
         },
       },
