@@ -125,6 +125,7 @@
   "dependencies": {
     "@chakra-ui/icons": "^1.0.10",
     "@chakra-ui/react": "^1.5.1",
+    "@electron-forge/publisher-github": "^6.0.0-beta.54",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "date-fns": "^2.21.1",
