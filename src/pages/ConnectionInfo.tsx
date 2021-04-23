@@ -6,11 +6,17 @@ import * as fs from "fs";
 import * as path from "path";
 import { WgConfig } from "wireguard-tools";
 
-import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
+import { Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 
 import * as WireGuard from "../utils/wg";
-import { deleteFile, updateStatus } from "../store/modules/wgConfig/action";
+import {
+  addFile,
+  deleteFile,
+  fetchFiles,
+  updateStatus,
+} from "../store/modules/wgConfig/action";
+
 import {
   AppState,
   StoreState,
@@ -28,8 +34,12 @@ interface ConnectionParam {
 export default function ConnectionInfo() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [file, setFile] = useState<WgConfig>();
   const [wgConfigFile, setWgConfigFile] = useState<WgConfigFile>();
+  const [fileName, setFileName] = useState<string>("");
+  const [interfaceText, setInterfaceText] = useState<string>("");
+  const [originalInterfaceText, setOriginalInterfaceText] = useState<string>(
+    ""
+  );
   const { name } = useParams<ConnectionParam>();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
@@ -45,7 +55,9 @@ export default function ConnectionInfo() {
     const config = new WgConfig({});
     config.parse(data);
 
-    setFile(config);
+    setFileName(name);
+    setInterfaceText(config.toString());
+    setOriginalInterfaceText(config.toString());
     setWgConfigFile(files.find((f) => f.name === name));
   }, [name]);
 
@@ -88,6 +100,55 @@ export default function ConnectionInfo() {
     }
   }
 
+  async function handleSave(): Promise<void> {
+    if (files.some((f) => f.name === fileName && fileName !== name)) {
+      toast(`A connection named ${fileName} already exists`, { type: "error" });
+      return;
+    }
+
+    try {
+      if (wgConfigFile) {
+        if (wgConfigFile.active) {
+          toast("Stop the tunnel before updating", { type: "error" });
+          return;
+        }
+        dispatch(deleteFile(wgConfigFile, userDataPath));
+      }
+      dispatch(addFile(`${fileName}.conf`, interfaceText, userDataPath));
+
+      if (fileName !== name) {
+        const lastConnectAt = localStorage.getItem(name);
+        if (lastConnectAt) {
+          localStorage.setItem(fileName, lastConnectAt);
+          localStorage.removeItem(name);
+        }
+        history.push(`/connection/${fileName}`);
+      }
+
+      dispatch(fetchFiles(userDataPath));
+    } catch (e) {
+      toast(e.message, { type: "error" });
+    }
+  }
+
+  function isAllowedToSave(): boolean {
+    return (
+      (fileName !== name || interfaceText !== originalInterfaceText) &&
+      fileName.length > 0 &&
+      interfaceText.length > 0
+    );
+  }
+
+  function onNameChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    setFileName(event.target.value);
+  }
+
+  function onInterfaceTextChange(
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ): void {
+    setInterfaceText(event.target.value);
+  }
+
   return (
     <Content>
       <Flex
@@ -104,39 +165,21 @@ export default function ConnectionInfo() {
       >
         <Flex justify="space-between" w="100%">
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
-            Connection Info
+            {name}
           </Text>
         </Flex>
         <Flex align="center" mt="4" w="100%">
-          <Text fontWeight="medium">Name:&nbsp;</Text>
-          {file && <Text>{name}</Text>}
+          <Text>Name:</Text>
+          <Input
+            bg="gray.300"
+            borderColor="transparent"
+            size="xs"
+            w="50%"
+            ml="2"
+            value={fileName}
+            onChange={onNameChange}
+          />
         </Flex>
-        <Flex align="center" mt="2" w="100%">
-          <Text fontWeight="medium">Addresses:&nbsp;</Text>
-          {file && <Text>{file.wgInterface.address?.join(", ")}</Text>}
-        </Flex>
-        <Flex align="center" mt="2" w="100%">
-          <Text fontWeight="medium">DNS:&nbsp;</Text>
-          {file && <Text>{file.wgInterface.dns?.join(", ")}</Text>}
-        </Flex>
-        {file?.peers?.map((peer) => {
-          return (
-            <Box key={peer.publicKey}>
-              <Flex align="center" mt="2" w="100%">
-                <Text fontWeight="medium">Allowed IPs:&nbsp;</Text>
-                <Text>{peer.allowedIps?.join(", ")}</Text>
-              </Flex>
-              <Flex align="center" mt="2" w="100%">
-                <Text fontWeight="medium">Endpoint:&nbsp;</Text>
-                <Text>{peer.endpoint}</Text>
-              </Flex>
-              <Flex align="center" mt="2" w="100%">
-                <Text fontWeight="medium">Public key:&nbsp;</Text>
-                <Text>{peer.publicKey}</Text>
-              </Flex>
-            </Box>
-          );
-        })}
         <Flex direction="column" mt="4" w="100%" h="100%">
           <Text fontWeight="medium">Interface:&nbsp;</Text>
           <Textarea
@@ -147,8 +190,8 @@ export default function ConnectionInfo() {
             mt="2"
             w="100%"
             h="100%"
-            value={file?.toString()}
-            readOnly
+            value={interfaceText}
+            onChange={onInterfaceTextChange}
           />
         </Flex>
         <Flex justify="flex-end" mt="4">
@@ -158,14 +201,14 @@ export default function ConnectionInfo() {
             onConfirm={handleDelete}
             launchButtonText="Delete"
           />
-          <Button
-            colorScheme="orange"
-            size="sm"
-            ml="4"
-            onClick={toggleActive}
-          >
+          <Button colorScheme="orange" size="sm" ml="4" onClick={toggleActive}>
             {wgConfigFile && wgConfigFile.active ? "Deactivate" : "Activate"}
           </Button>
+          {isAllowedToSave() && (
+            <Button colorScheme="green" size="sm" ml="4" onClick={handleSave}>
+              Save
+            </Button>
+          )}
         </Flex>
       </Flex>
     </Content>
