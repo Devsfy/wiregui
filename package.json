@@ -1,7 +1,7 @@
 {
   "name": "wiregui",
   "productName": "wiregui",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A graphical user interface for wireguard",
   "main": ".webpack/main",
   "scripts": {
@@ -125,6 +125,7 @@
   "dependencies": {
     "@chakra-ui/icons": "^1.0.10",
     "@chakra-ui/react": "^1.5.1",
+    "@electron-forge/publisher-github": "^6.0.0-beta.54",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "date-fns": "^2.21.1",
