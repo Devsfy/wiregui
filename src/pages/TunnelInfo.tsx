@@ -27,11 +27,11 @@ import {
 import DialogButton from "../components/DialogButton";
 import Content from "../components/Content";
 
-interface ConnectionParam {
+interface TunnelParam {
   name: string;
 }
 
-export default function ConnectionInfo() {
+export default function TunnelInfo() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [wgConfigFile, setWgConfigFile] = useState<WgConfigFile>();
@@ -40,7 +40,7 @@ export default function ConnectionInfo() {
   const [originalInterfaceText, setOriginalInterfaceText] = useState<string>(
     ""
   );
-  const { name } = useParams<ConnectionParam>();
+  const { name } = useParams<TunnelParam>();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
@@ -102,7 +102,7 @@ export default function ConnectionInfo() {
 
   async function handleSave(): Promise<void> {
     if (files.some((f) => f.name === fileName && fileName !== name)) {
-      toast(`A connection named ${fileName} already exists`, { type: "error" });
+      toast(`A tunnel named ${fileName} already exists`, { type: "error" });
       return;
     }
 
@@ -122,7 +122,7 @@ export default function ConnectionInfo() {
           localStorage.setItem(fileName, lastConnectAt);
           localStorage.removeItem(name);
         }
-        history.push(`/connection/${fileName}`);
+        history.push(`/tunnel/${fileName}`);
       }
 
       dispatch(fetchFiles(userDataPath));

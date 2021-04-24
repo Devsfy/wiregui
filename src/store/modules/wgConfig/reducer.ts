@@ -6,7 +6,7 @@ import { WgConfigTypes, WgConfigState } from "../../../types/store";
 
 const INITIAL_STATE: WgConfigState = {
   files: [],
-  currentConnectionName: "",
+  activeTunnelName: "",
 };
 
 const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
@@ -46,11 +46,11 @@ const wgConfig: Reducer<WgConfigState> = (state = INITIAL_STATE, action) => {
       }
 
       case WgConfigTypes.updateStatus: {
-        const { currentConnectionName } = action.payload;
+        const { activeTunnelName } = action.payload;
 
-        draft.currentConnectionName = currentConnectionName;
+        draft.activeTunnelName = activeTunnelName;
         draft.files = draft.files.map((file) => {
-          file.active = file.name === currentConnectionName;
+          file.active = file.name === activeTunnelName;
 
           if (file.active) {
             file.lastConnectAt = new Date().toISOString();

@@ -7,8 +7,8 @@ import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
 import { StoreState, WgConfigState } from "../../types/store";
 
-import NewConnection from "./NewConnection";
-import ConnectionItem from "./ConnectionItem";
+import NewTunnelButton from "./NewTunnelButton";
+import SidebarItem from "./Sidebartem";
 
 export default function Sidebar() {
   const history = useHistory();
@@ -17,17 +17,17 @@ export default function Sidebar() {
   );
 
   function handleRedirect(param: string) {
-    history.push(`/connection/${param}`);
+    history.push(`/tunnel/${param}`);
   }
 
   return (
     <Flex bg="gray.200" direction="column" w="350px" position="relative">
       <Box px="4" pt="4" w="100%">
         <Flex justify="center">
-          <NewConnection />
+          <NewTunnelButton />
         </Flex>
         <Text color="whiteAlpha.700" fontWeight="bold" mt="8">
-          CONNECTIONS
+          TUNNELS
         </Text>
       </Box>
       <Flex direction="column">
@@ -37,7 +37,7 @@ export default function Sidebar() {
             onClick={() => handleRedirect(file.name)}
             _hover={{ textDecoration: "none" }}
           >
-            <ConnectionItem
+            <SidebarItem
               name={file.name}
               path={file.path}
               address={file.address}

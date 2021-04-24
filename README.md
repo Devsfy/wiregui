@@ -9,8 +9,8 @@ Wire GUI is a cross-platform graphical user interface for [wireguard](https://ww
 ## Features
 
 - Connect and disconnect from wireguard tunnels
-- List all your saved connections
-- Show date when the connection was last connected
+- List all your saved tunnels
+- Show date when the tunnel was last connected
 - Display current connected tunnel
 
 ![Wire GUI Picture](https://i.imgur.com/wWxEyJH.png)

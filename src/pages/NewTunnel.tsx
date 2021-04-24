@@ -10,7 +10,7 @@ import { StoreState, AppState, WgConfigState } from "../types/store";
 
 import Content from "../components/Content";
 
-export default function NewConnection() {
+export default function NewTunnel() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [hiddenInput, setHiddenInput] = useState<HTMLInputElement | null>();
@@ -65,13 +65,13 @@ export default function NewConnection() {
     }
 
     if (files.some(f => f.name === fileName)) {
-      toast(`A connection named ${fileName} already exists`, { type: "error" });
+      toast(`A tunnel named ${fileName} already exists`, { type: "error" });
       return;
     }
 
     try {
       dispatch(addFile(`${fileName}.conf`, interfaceText, userDataPath));
-      history.push(`/connection/${fileName}`);
+      history.push(`/tunnel/${fileName}`);
     } catch (e) {
       toast(e.message, { type: "error" });
     }
@@ -101,7 +101,7 @@ export default function NewConnection() {
       >
         <Flex justify="space-between" w="100%">
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
-            New Connection
+            New Tunnel
           </Text>
           <Button size="xs" onClick={() => hiddenInput?.click()}>
             Import
