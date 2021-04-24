@@ -95,9 +95,8 @@ export default function NewTunnel() {
         p="4"
         w="575px"
         h="auto"
-        maxH="625px"
         mx="auto"
-        mt="8"
+        my="10"
       >
         <Flex justify="space-between" w="100%">
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">

@@ -7,14 +7,7 @@ import Content from "../components/Content";
 export default function Home() {
   return (
     <Content>
-      <Flex
-        marginLeft="25px"
-        position="absolute"
-        top="25%"
-        left="50%"
-        direction="column"
-        justify="center"
-      >
+      <Flex direction="column" justify="center" marginLeft="30%">
         <Center>
           <Image
             src="../icons/dragon.png"
