@@ -106,6 +106,11 @@ export default function TunnelInfo() {
       return;
     }
 
+    if (fileName.length > 15) {
+      toast("Filename is too long, maximum 15 characters", { type: "error" });
+      return;
+    }
+
     try {
       if (wgConfigFile) {
         if (wgConfigFile.active) {

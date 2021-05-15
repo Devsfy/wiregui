@@ -59,6 +59,11 @@ export default function NewTunnel() {
       return;
     }
 
+    if (fileName.length > 15) {
+      toast("Filename is too long, maximum 15 characters", { type: "error" });
+      return;
+    }
+
     if (!interfaceText || interfaceText.length === 0) {
       toast("Interface cannot be empty", { type: "error" });
       return;
