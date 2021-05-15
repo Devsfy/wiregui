@@ -5,7 +5,7 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 
 import { WgConfigFile } from "../../types/store";
 
-export default function ConnectionItem({
+export default function SidebarItem({
   name,
   address,
   lastConnectAt,

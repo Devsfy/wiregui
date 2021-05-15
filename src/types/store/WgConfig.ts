@@ -10,17 +10,17 @@ export interface WgConfigFile {
   path: string;
 
   /**
-   * Addresses of connection
+   * Addresses of tunnel
    */
   address: string[] | undefined;
 
   /**
-   * Date when connection was last connected as ISO String
+   * Date when tunnel was last connected as ISO String
    */
   lastConnectAt: string | null;
 
   /**
-   * If the connection is active,
+   * If the tunnel is active,
    * may be unsynced with wireguard if changing via CLI
    */
   active: boolean;
@@ -35,5 +35,5 @@ export enum WgConfigTypes {
 
 export interface WgConfigState {
   files: WgConfigFile[];
-  currentConnectionName: string;
+  activeTunnelName: string;
 }

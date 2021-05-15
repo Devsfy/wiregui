@@ -1,6 +1,6 @@
 import { run } from "./run";
 
-export async function getCurrentConnectionName(): Promise<string> {
+export async function getActiveTunnelName(): Promise<string> {
   try {
     const data = await run("wg show", false);
     if (data.stderr) {
@@ -16,27 +16,27 @@ export async function getCurrentConnectionName(): Promise<string> {
     }
   
     const lines = data.stdout.split(/\n/);
-    const connectionName = lines[0].split(" ")[1]?.replace(/(\r\n|\n|\r)/gm, "");
+    const tunnelName = lines[0].split(" ")[1]?.replace(/(\r\n|\n|\r)/gm, "");
   
-    return connectionName;
+    return tunnelName;
   } catch (e) {
     if (!e.stderr) {
       throw new Error(e.message);
     }
 
-    let connectionName = "";
+    let tunnelName = "";
 
     if (process.platform === "win32") {
       const splittedText: string[] = e.stderr.split("Unable to access interface");
       const indexOfSymbol = splittedText[1].indexOf(":");
-      connectionName = splittedText[1].substring(1, indexOfSymbol);
+      tunnelName = splittedText[1].substring(1, indexOfSymbol);
     } else {
       const splittedText: string[] = e.stderr.split(":");
       const indexOfName = splittedText[0].lastIndexOf(" ");
-      connectionName = splittedText[0].substring(indexOfName + 1, splittedText[0].length);
+      tunnelName = splittedText[0].substring(indexOfName + 1, splittedText[0].length);
     }
 
-    return connectionName;
+    return tunnelName;
   }
 }
 
@@ -57,16 +57,16 @@ export async function stop(filePath: string): Promise<void> {
 }
 
 export async function toggle(filePath: string): Promise<boolean> {
-  const connectionName = getNameFromPath(filePath);
-  const currentConnectionName = await getCurrentConnectionName();
+  const tunnelName = getNameFromPath(filePath);
+  const activeTunnelName = await getActiveTunnelName();
 
-  if (currentConnectionName && currentConnectionName !== connectionName) {
+  if (activeTunnelName && activeTunnelName !== tunnelName) {
     throw new Error("Another tunnel is already running, deactivate it first.");
   }
 
   let started = false;
 
-  if (currentConnectionName === connectionName) {
+  if (activeTunnelName === tunnelName) {
     await stop(filePath);
     started = false;
   } else {

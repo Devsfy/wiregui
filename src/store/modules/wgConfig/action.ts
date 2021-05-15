@@ -4,7 +4,7 @@ import { Dispatch } from "react";
 import { WgConfig } from "wireguard-tools";
 
 import { WgConfigTypes, WgConfigFile } from "../../../types/store";
-import { getCurrentConnectionName } from "../../../utils";
+import { getActiveTunnelName } from "../../../utils";
 
 export function fetchFiles(userDataPath: string) {
   return async function(dispatch: Dispatch<unknown>) {
@@ -17,7 +17,7 @@ export function fetchFiles(userDataPath: string) {
       fs.mkdirSync(configPath);
     }
   
-    const currentConnectionName = await getCurrentConnectionName();
+    const activeTunnelName = await getActiveTunnelName();
     const filenames = fs.readdirSync(configPath);
     const files = await Promise.all(
       filenames.map(async (filename: string) => {
@@ -32,12 +32,12 @@ export function fetchFiles(userDataPath: string) {
           path: filePath,
           address: config.wgInterface.address,
           lastConnectAt,
-          active: name === currentConnectionName,
+          active: name === activeTunnelName,
         };
       })
     );
 
-    dispatch(updateStatus(currentConnectionName));
+    dispatch(updateStatus(activeTunnelName));
     dispatch(fetchFilesSuccess(files));
   }
 }
@@ -96,11 +96,11 @@ export function deleteFile(file: WgConfigFile, userDataPath: string) {
   };
 }
 
-export function updateStatus(currentConnectionName: string) {
+export function updateStatus(activeTunnelName: string) {
   return {
     type: WgConfigTypes.updateStatus,
     payload: {
-      currentConnectionName,
+      activeTunnelName,
     },
   };
 }
