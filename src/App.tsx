@@ -44,6 +44,11 @@ function App() {
       }
     });
 
+    ipcRenderer.send("check-for-updates");
+    ipcRenderer.on("update-available", () => {
+      toast("There's a new update available, check our github releases page.", { type: "warning" });
+    });
+
     check();
     dispatch(fetchFiles(userDataPath));
   }, []);
