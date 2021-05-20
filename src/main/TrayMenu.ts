@@ -5,6 +5,7 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
+  nativeImage,
   Tray,
 } from "electron";
 import { getIconsPath } from "../utils";
@@ -23,19 +24,33 @@ export class TrayMenu {
 
   private contextMenu: Menu;
 
+  private readonly icon: nativeImage;
+
+  private readonly iconActive: nativeImage;
+
   constructor(private readonly window: BrowserWindow, isDevelopement: boolean) {
     this.tunnels = [];
     this.isQuitting = false;
+    this.icon = nativeImage.createFromPath(getIconsPath("icon_tray.png", isDevelopement));
+    this.iconActive = nativeImage.createFromPath(getIconsPath("icon_tray_active.png", isDevelopement));
 
-    this.tray = new Tray(getIconsPath("icon_tray.png", isDevelopement));
+    this.tray = new Tray(this.icon);
     this.tray.setToolTip("Wire GUI");
     this.contextMenu = Menu.buildFromTemplate(this.mountTrayMenuItems());
     this.tray.setContextMenu(this.contextMenu);
 
     ipcMain.on("WgConfigStateChange", (event, args: TunnelInfo[]) => {
       this.tunnels = args;
+
       this.contextMenu = Menu.buildFromTemplate(this.mountTrayMenuItems());
       this.tray.setContextMenu(this.contextMenu);
+
+      // When calling setContextMenu alongside setImage
+      // For some reason electron reloads the tray image
+      // With this hack this doesn't happen
+      setTimeout(() => {
+        this.tray.setImage(this.tunnels.some(tunnel => tunnel.active) ? this.iconActive : this.icon);
+      }, 100);
     });
 
     window.on("close", (event) => {
