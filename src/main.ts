@@ -15,6 +15,13 @@ if (require("electron-squirrel-startup")) { // eslint-disable-line global-requir
 const isDevelopement = (process.env.NODE_ENV !== "production");
 
 const createWindow = (): void => {
+  // Enforce single instance.
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
+    app.quit();
+    return;
+  }
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 850,
@@ -62,6 +69,17 @@ app.on("activate", () => {
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+  }
+});
+
+// Bring the window to front on spawning new instance.
+app.on("second-instance", (event, commandLine, workingDirectory) => {
+  const mainWindow = BrowserWindow.getAllWindows()[0];
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    }
+    mainWindow.show();
   }
 });
 
