@@ -28,10 +28,20 @@ export async function getActiveTunnelName(): Promise<string> {
 
     if (process.platform === "win32") {
       const splittedText: string[] = e.stderr.split("Unable to access interface");
+
+      if (splittedText.length < 2) {
+        return tunnelName;
+      }
+
       const indexOfSymbol = splittedText[1].indexOf(":");
       tunnelName = splittedText[1].substring(1, indexOfSymbol);
     } else {
       const splittedText: string[] = e.stderr.split(":");
+
+      if (splittedText.length < 1) {
+        return tunnelName;
+      }
+
       const indexOfName = splittedText[0].lastIndexOf(" ");
       tunnelName = splittedText[0].substring(indexOfName + 1, splittedText[0].length);
     }
