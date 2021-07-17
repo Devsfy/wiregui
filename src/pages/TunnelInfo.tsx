@@ -80,7 +80,7 @@ export default function TunnelInfo() {
       try {
         await checkWgIsInstalled();
       } catch (e) {
-        toast("Wireguard is not installed on the system.", { type: "error" });
+        toast("Wireguard was not detected on the system. If you just installed it, try restarting wiregui.", { type: "error" });
         return;
       }
       toast(e.message, { type: "error" });
