@@ -161,6 +161,10 @@ export default function TunnelInfo() {
     setInterfaceText(event.target.value);
   }
 
+  function handleCancel() {
+    history.push("/");
+  }
+
   return (
     <Content>
       <Flex
@@ -214,6 +218,9 @@ export default function TunnelInfo() {
           />
         </Flex>
         <Flex justify="flex-end" mt="4">
+          <Button size="sm" onClick={handleCancel}>
+            Cancel
+          </Button>
           <Button colorScheme="orange" size="sm" ml="4" onClick={toggleActive}>
             {wgConfigFile && wgConfigFile.active ? "Deactivate" : "Activate"}
           </Button>
