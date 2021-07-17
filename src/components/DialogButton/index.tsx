@@ -16,6 +16,7 @@ export interface DialogButtonProps {
   header: string;
   body: string;
   title?: string;
+  color?: string;
   colorScheme?: string;
   launchButtonText: string | ReactElement;
   cancelButtonText?: string;
@@ -32,6 +33,7 @@ export default function DialogButton({
   onCancel,
   launchButtonText,
   title,
+  color,
   colorScheme,
   motionPreset = "slideInBottom",
   cancelButtonText = "Cancel",
@@ -56,7 +58,7 @@ export default function DialogButton({
 
   return (
     <>
-      <Button colorScheme={colorScheme} title={title} onClick={onOpen} size="sm" ml="4">
+      <Button colorScheme={colorScheme} color={color} title={title} onClick={onOpen} size="sm" ml="4">
         {launchButtonText}
       </Button>
       <AlertDialog

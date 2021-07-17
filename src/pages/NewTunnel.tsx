@@ -150,6 +150,7 @@ export default function NewTunnel() {
           </Button>
           <Button
             colorScheme="orange"
+            color="whiteAlpha.800"
             size="sm"
             ml="4"
             disabled={!fileName || !interfaceText}

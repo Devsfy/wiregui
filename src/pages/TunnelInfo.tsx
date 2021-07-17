@@ -184,6 +184,7 @@ export default function TunnelInfo() {
           </Text>
           <DialogButton
             title="Delete"
+            color="whiteAlpha.800"
             colorScheme="red"
             header="Are you sure?"
             body="You cannot recover this file after deleting."
@@ -221,11 +222,11 @@ export default function TunnelInfo() {
           <Button size="sm" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button colorScheme="orange" size="sm" ml="4" onClick={toggleActive}>
+          <Button colorScheme="orange" color="whiteAlpha.800" size="sm" ml="4" onClick={toggleActive}>
             {wgConfigFile && wgConfigFile.active ? "Deactivate" : "Activate"}
           </Button>
           {isAllowedToSave() && (
-            <Button colorScheme="green" size="sm" ml="4" onClick={handleSave}>
+            <Button colorScheme="green" color="blackAlpha.800" size="sm" ml="4" onClick={handleSave}>
               Save
             </Button>
           )}
