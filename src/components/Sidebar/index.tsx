@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation  } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { version } from "../../../package.json";
 
@@ -12,12 +12,17 @@ import SidebarItem from "./Sidebartem";
 
 export default function Sidebar() {
   const history = useHistory();
+  const location = useLocation();
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
 
-  function handleRedirect(param: string) {
+  function handleRedirect(param: string): void {
     history.push(`/tunnel/${param}`);
+  }
+
+  function isSelected(name: string): boolean {
+    return location.pathname.split("/tunnel/")[1] === name;
   }
 
   return (
@@ -43,6 +48,7 @@ export default function Sidebar() {
               address={file.address}
               lastConnectAt={file.lastConnectAt}
               active={file.active}
+              selected={isSelected(file.name)}
             />
           </Link>
         ))}

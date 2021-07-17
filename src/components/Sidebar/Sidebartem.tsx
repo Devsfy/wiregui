@@ -5,20 +5,29 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 
 import { WgConfigFile } from "../../types/store";
 
+interface SideBarParams extends WgConfigFile {
+  /**
+   * If the item is selected on the sidebar
+   */
+  selected: boolean;
+}
+
 export default function SidebarItem({
   name,
   address,
   lastConnectAt,
   active,
-}: WgConfigFile) {
+  selected,
+}: SideBarParams) {
   return (
     <Flex
+      bg={selected ? "whiteAlpha.100" : ""}
       align="center"
       cursor="pointer"
       w="100%"
       p="4"
       transition=".3s ease"
-      _hover={{ background: "whiteAlpha.100" }}
+      _hover={{ background: "whiteAlpha.200" }}
     >
       <Box
         bg={active ? "green.400" : "whiteAlpha.600"}
