@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import * as fs from "fs";
 import * as path from "path";
-import { WgConfig } from "wireguard-tools";
+import { checkWgIsInstalled, WgConfig } from "wireguard-tools";
 
 import { Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import { toast } from "react-toastify";
@@ -77,6 +77,12 @@ export default function TunnelInfo() {
       toast(`${message} ${wgConfigFile.name}`, { type: "success" });
       dispatch(updateStatus(started ? wgConfigFile.name : ""));
     } catch (e) {
+      try {
+        await checkWgIsInstalled();
+      } catch (e) {
+        toast("Wireguard is not installed on the system.", { type: "error" });
+        return;
+      }
       toast(e.message, { type: "error" });
     }
   }
