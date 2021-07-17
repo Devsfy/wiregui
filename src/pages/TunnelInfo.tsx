@@ -7,6 +7,7 @@ import * as path from "path";
 import { checkWgIsInstalled, WgConfig } from "wireguard-tools";
 
 import { Button, Flex, Input, Text, Textarea } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 import { toast } from "react-toastify";
 
 import * as WireGuard from "../utils/wg";
@@ -177,6 +178,14 @@ export default function TunnelInfo() {
           <Text color="whiteAlpha.800" fontSize="lg" fontWeight="bold">
             {name}
           </Text>
+          <DialogButton
+            title="Delete"
+            colorScheme="red"
+            header="Are you sure?"
+            body="You cannot recover this file after deleting."
+            onConfirm={handleDelete}
+            launchButtonText={<DeleteIcon />}
+          />
         </Flex>
         <Flex align="center" mt="4" w="100%">
           <Text>Name:</Text>
@@ -205,12 +214,6 @@ export default function TunnelInfo() {
           />
         </Flex>
         <Flex justify="flex-end" mt="4">
-          <DialogButton
-            header="Are you sure?"
-            body="You cannot recover this file after deleting."
-            onConfirm={handleDelete}
-            launchButtonText="Delete"
-          />
           <Button colorScheme="orange" size="sm" ml="4" onClick={toggleActive}>
             {wgConfigFile && wgConfigFile.active ? "Deactivate" : "Activate"}
           </Button>

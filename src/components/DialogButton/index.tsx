@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 
 import {
   AlertDialog,
@@ -15,7 +15,9 @@ import {
 export interface DialogButtonProps {
   header: string;
   body: string;
-  launchButtonText: string;
+  title?: string;
+  colorScheme?: string;
+  launchButtonText: string | ReactElement;
   cancelButtonText?: string;
   confirmButtonText?: string;
   motionPreset?: "slideInBottom" | "slideInRight" | "scale" | "none";
@@ -29,6 +31,8 @@ export default function DialogButton({
   onConfirm,
   onCancel,
   launchButtonText,
+  title,
+  colorScheme,
   motionPreset = "slideInBottom",
   cancelButtonText = "Cancel",
   confirmButtonText = "Confirm",
@@ -52,7 +56,7 @@ export default function DialogButton({
 
   return (
     <>
-      <Button onClick={onOpen} size="sm" ml="4">
+      <Button colorScheme={colorScheme} title={title} onClick={onOpen} size="sm" ml="4">
         {launchButtonText}
       </Button>
       <AlertDialog
