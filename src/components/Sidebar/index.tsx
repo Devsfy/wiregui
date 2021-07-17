@@ -18,7 +18,11 @@ export default function Sidebar() {
   );
 
   function handleRedirect(param: string): void {
-    history.push(`/tunnel/${param}`);
+    const newPath = `/tunnel/${param}`;
+    if (location.pathname === newPath) {
+      return;
+    }
+    history.push(newPath);
   }
 
   function isSelected(name: string): boolean {
