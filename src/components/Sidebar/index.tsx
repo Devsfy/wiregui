@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory, useLocation  } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { Container, Box, Link, Flex, Text } from "@chakra-ui/react";
+import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
 import * as fs from "fs";
 import * as path from "path";
@@ -75,7 +75,7 @@ export default function Sidebar() {
       </Box>
       <Flex direction="column">
         {files.map((file) => (
-          <Container key={file.name}>
+          <div key={file.name}>
             <Link
               onClick={() => handleRedirect(file.name)}
               _hover={{ textDecoration: "none" }}
@@ -97,7 +97,7 @@ export default function Sidebar() {
                 Delete
               </ContextMenuItem>
             </ContextMenuList>
-          </Container>
+          </div>
         ))}
       </Flex>
       <Text
