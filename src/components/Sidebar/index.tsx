@@ -73,7 +73,7 @@ export default function Sidebar() {
           TUNNELS
         </Text>
       </Box>
-      <Flex direction="column">
+      <Flex direction="column" overflowY="auto" maxH="calc(100vh - 96px - 19px)" className="sidebar__list__container">
         {files.map((file) => (
           <div key={file.name}>
             <Link
