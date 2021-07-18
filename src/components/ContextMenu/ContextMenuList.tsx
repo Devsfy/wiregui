@@ -138,7 +138,6 @@ export const ContextMenuList: React.FC<Props & MotionBoxProps> = ({
       borderWidth={1}
       position="fixed"
       bg={bgColor}
-      py={1}
       minW={40}
       w={52}
       // maxW={96}
