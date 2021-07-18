@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import { RecoilRoot } from "recoil";
 import { ipcRenderer } from "electron";
 import { checkWgIsInstalled } from "wireguard-tools";
 import { ToastContainer, toast } from "react-toastify";
@@ -63,8 +64,10 @@ function App() {
 
 export default function () {
   return (
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <RecoilRoot>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </RecoilRoot>
   );
 }
