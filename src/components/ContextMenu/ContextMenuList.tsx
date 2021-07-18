@@ -133,7 +133,7 @@ export const ContextMenuList: React.FC<Props & MotionBoxProps> = ({
   return (
     <MotionBox
       variants={motionVariants}
-      animate={menu?.isOpen ? "enter" : "exit"}
+      animate={menu && menu.isOpen ? "enter" : "exit"}
       ref={menuRef}
       borderWidth={1}
       position="fixed"
