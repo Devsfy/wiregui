@@ -16,7 +16,7 @@ interface TunnelInfo {
 }
 
 export class TrayMenu {
-  private isQuitting: boolean;
+  public isQuitting: boolean;
 
   private tunnels: TunnelInfo[];
 
