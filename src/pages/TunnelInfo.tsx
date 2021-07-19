@@ -25,7 +25,7 @@ import {
   WgConfigState,
 } from "../types/store";
 
-import DialogButton from "../components/DialogButton";
+import { DialogButton } from "../components/Dialog";
 import Content from "../components/Content";
 
 interface TunnelParam {

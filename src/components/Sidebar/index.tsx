@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory, useLocation  } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import { AppState, StoreState, WgConfigFile, WgConfigState } from "../../types/s
 import { deleteFile, updateStatus } from "../../store/modules/wgConfig/action";
 import * as WireGuard from "../../utils/wg";
 
+import { Dialog } from "../Dialog";
 import NewTunnelButton from "./NewTunnelButton";
 import SidebarItem from "./Sidebartem";
 
@@ -21,6 +22,10 @@ export default function Sidebar() {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
+
+  const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [nameToDelete, setNameToDelete] = useState<string>();
+
   const { files } = useSelector<StoreState, WgConfigState>(
     (state) => state.wgConfig
   );
@@ -54,9 +59,14 @@ export default function Sidebar() {
     return wgConfigFile.active;
   }
 
-  function handleDelete(name: string) {
+  function handleDelete() {
+    if (!nameToDelete) {
+      toast("Could not find config file", { type: "error" });
+      return;
+    }
+
     try {
-      const wgConfigFile = getWgConfigFile(name);
+      const wgConfigFile = getWgConfigFile(nameToDelete);
       if (!wgConfigFile) {
         toast("Could not find config file", { type: "error" });
         return;
@@ -64,12 +74,21 @@ export default function Sidebar() {
 
       dispatch(deleteFile(wgConfigFile, userDataPath));
 
-      if (isSelected(name)) {
+      if (isSelected(nameToDelete)) {
         history.push("/");
       }
     } catch (e) {
       toast(e.message, { type: "error" });
     }
+  }
+
+  function handleDeleteDialog(name: string) {
+    setNameToDelete(name);
+    setDialogOpen(true);
+  }
+
+  function cancelDialog(): void {
+    setDialogOpen(false);
   }
 
   async function handleToggle(name: string) {
@@ -157,7 +176,7 @@ export default function Sidebar() {
               <hr/>
               <ContextMenuItem
                 color="red"
-                onClick={({ passData }) => handleDelete(passData.name as string)}
+                onClick={({ passData }) => handleDeleteDialog(passData.name as string)}
               >
                 Delete
               </ContextMenuItem>
@@ -175,6 +194,14 @@ export default function Sidebar() {
         >
           v{version}
         </Text>
+        <Dialog
+          isOpen={isDialogOpen}
+          header="Are you sure?"
+          body="You cannot recover this file after deleting."
+          onConfirm={handleDelete}
+          onCancel={cancelDialog}
+          onClose={cancelDialog}
+        />
     </Flex>
   );
 }

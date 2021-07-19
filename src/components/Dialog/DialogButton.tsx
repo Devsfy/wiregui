@@ -26,7 +26,7 @@ export interface DialogButtonProps {
   onCancel?: () => void;
 }
 
-export default function DialogButton({
+export function DialogButton({
   header,
   body,
   onConfirm,
