@@ -1,5 +1,6 @@
-import { app, autoUpdater, BrowserWindow, dialog } from "electron";
+import { app, autoUpdater, BrowserWindow, dialog, Menu } from "electron";
 import { TrayMenu } from "./main/TrayMenu";
+import { MenuBar } from "./main/MenuBar";
 import { getIconsPath } from "./utils";
 import "./ipc/main";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -41,13 +42,15 @@ const createWindow = (): void => {
   if (isDevelopement) {
     // Open the DevTools if in development mode.
     mainWindow.webContents.openDevTools();
-  } else {
-    // Remove menu from production build.
-    mainWindow.removeMenu();
   }
 
-  // Create the tray menu
-  new TrayMenu(mainWindow, isDevelopement);
+  // Create custom menus
+  const trayMenu = new TrayMenu(mainWindow, isDevelopement);
+  const menuBar = new MenuBar(trayMenu);
+  const template = menuBar.generateTemplate();
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 };
 
 // This method will be called when Electron has finished
