@@ -29,7 +29,8 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "wiregui",
-            "icon": "./src/assets/icons/icon.ico"
+            "icon": "./src/assets/icons/icon.ico",
+            "setupIcon": "./src/assets/icons/icon.ico"
           }
         },
         {
