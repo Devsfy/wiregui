@@ -31,8 +31,13 @@ export class TrayMenu {
   constructor(private readonly window: BrowserWindow, isDevelopement: boolean) {
     this.tunnels = [];
     this.isQuitting = false;
-    this.icon = nativeImage.createFromPath(getIconsPath("icon_tray.png", isDevelopement));
-    this.iconActive = nativeImage.createFromPath(getIconsPath("icon_tray_active.png", isDevelopement));
+
+    const iconName = "icon_tray";
+    const iconActiveName = "icon_tray_active";
+    const isWin32 = process.platform === "win32";
+
+    this.icon = nativeImage.createFromPath(getIconsPath(`${iconName}.${isWin32 ? "ico" : "png"}`, isDevelopement));
+    this.iconActive = nativeImage.createFromPath(getIconsPath(`${iconActiveName}.${isWin32 ? "ico" : "png"}`, isDevelopement));
 
     this.tray = new Tray(this.icon);
     this.tray.setToolTip("Wire GUI");
