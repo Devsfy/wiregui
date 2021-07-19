@@ -46,7 +46,7 @@ const createWindow = (): void => {
 
   // Create custom menus
   const trayMenu = new TrayMenu(mainWindow, isDevelopement);
-  const menuBar = new MenuBar(trayMenu);
+  const menuBar = new MenuBar(mainWindow, trayMenu);
   const template = menuBar.generateTemplate();
 
   const menu = Menu.buildFromTemplate(template)

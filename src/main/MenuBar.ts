@@ -1,14 +1,31 @@
-import { app, MenuItem, MenuItemConstructorOptions } from "electron";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  MenuItem,
+  MenuItemConstructorOptions,
+} from "electron";
 import { TrayMenu } from "./TrayMenu";
 
 export class MenuBar {
-  constructor(private trayMenu: TrayMenu) {}
+  constructor(
+    private readonly window: BrowserWindow,
+    private readonly trayMenu?: TrayMenu
+  ) {}
 
   public generateTemplate(): MenuItemConstructorOptions[] | MenuItem[] {
     return [
       {
         label: "File",
         submenu: [
+          {
+            label: "Import",
+            accelerator: "Ctrl+O",
+            click: this.import,
+          },
+          {
+            type: "separator",
+          },
           {
             label: "Quit",
             accelerator: "Ctrl+Q",
@@ -60,8 +77,21 @@ export class MenuBar {
     ];
   }
 
+  private import = async (): Promise<void> => {
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile", "multiSelections"],
+      filters: [{ name: "Config file", extensions: ["conf"] }],
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      this.window.webContents.send("importFiles", result.filePaths);
+    }
+  };
+
   private quit = (): void => {
-    this.trayMenu.isQuitting = true;
+    if (this.trayMenu) {
+      this.trayMenu.isQuitting = true;
+    }
     app.quit();
   };
 }
