@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Box, Link, Flex, Text } from "@chakra-ui/react";
 
-import { checkWgIsInstalled } from "wireguard-tools";
+import * as fs from "fs";
+import * as path from "path";
+import { checkWgIsInstalled, WgConfig } from "wireguard-tools";
 
 import { version } from "../../../package.json";
 import { ContextMenuItem, ContextMenuList } from "../ContextMenu";
@@ -93,6 +95,26 @@ export default function Sidebar() {
     }
   }
 
+  async function handleCopy(name: string) {
+    const wgConfigFile = getWgConfigFile(name);
+    if (!wgConfigFile) {
+      toast("Could not find config file", { type: "error" });
+      return;
+    }
+
+    const filePath = path.join(userDataPath, "configurations", `${name}.conf`);
+    const data = fs.readFileSync(filePath, "utf-8");
+    const config = new WgConfig({});
+    config.parse(data);
+
+    try {
+      await navigator.clipboard.writeText(config.toString());
+      toast(`${name} copied to clipboard`, { type: "success" });
+    } catch (e) {
+      toast(`Could not copy ${name} to clipboard`, { type: "error" });
+    }
+  }
+
   return (
     <Flex bg="gray.200" direction="column" w="350px" position="relative">
       <Box px="4" pt="4" w="100%">
@@ -120,12 +142,19 @@ export default function Sidebar() {
               />
             </Link>
             <ContextMenuList menuId={`menu-${file.name}`}>
-            <ContextMenuItem
+              <ContextMenuItem
                 color="whiteAlpha.700"
                 onClick={({ passData }) => handleToggle(passData.name as string)}
               >
                 {isActive(file.name) ? "Deactivate" : "Activate" }
               </ContextMenuItem>
+              <ContextMenuItem
+                color="whiteAlpha.700"
+                onClick={({ passData }) => handleCopy(passData.name as string)}
+              >
+                Copy
+              </ContextMenuItem>
+              <hr/>
               <ContextMenuItem
                 color="red"
                 onClick={({ passData }) => handleDelete(passData.name as string)}
