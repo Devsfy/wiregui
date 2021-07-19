@@ -34,7 +34,7 @@ export default function Sidebar() {
     history.push(newPath);
   }
 
-  function getWgConfigFile(name: string):WgConfigFile | undefined {
+  function getWgConfigFile(name: string): WgConfigFile | undefined {
     return files.find((f) => f.name === name);
   }
 
