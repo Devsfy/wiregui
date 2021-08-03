@@ -137,6 +137,7 @@ export default function TunnelInfo() {
         history.push(`/tunnel/${fileName}`);
       }
 
+      setOriginalInterfaceText(interfaceText);
       dispatch(fetchFiles(userDataPath));
     } catch (e) {
       toast(e.message, { type: "error" });
