@@ -1,7 +1,7 @@
 {
   "name": "wiregui",
   "productName": "wiregui",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A graphical user interface for wireguard",
   "main": ".webpack/main",
   "scripts": {
