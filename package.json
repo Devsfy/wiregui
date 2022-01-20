@@ -56,6 +56,13 @@
           }
         },
         {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "background": "./src/assets/icons/icon.png",
+            "format": "ULFO"
+          }
+        },
+        {
           "name": "electron-forge-maker-appimage",
           "platforms": [
             "linux"
@@ -101,6 +108,7 @@
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.63",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
